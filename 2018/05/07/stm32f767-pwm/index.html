@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="焦迪" />
+
+
+
+<meta name="description" content="&amp;emsp;本文介绍STM32F767 PWM的基本用法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STM32F767 PWM的基本用法">
+<meta property="og:url" content="http://jiaodi.tech/2018/05/07/stm32f767-pwm/index.html">
+<meta property="og:site_name" content="焦迪的博客">
+<meta property="og:description" content="&amp;emsp;本文介绍STM32F767 PWM的基本用法。">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/stm32f767_pwm01.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/stm32f767_pwm02.png">
+<meta property="og:updated_time" content="2018-05-12T16:28:42.383Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="STM32F767 PWM的基本用法">
+<meta name="twitter:description" content="&amp;emsp;本文介绍STM32F767 PWM的基本用法。">
+<meta name="twitter:image" content="http://omcg8fk23.bkt.clouddn.com/stm32f767_pwm01.png">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="焦迪的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="http://omcg8fk23.bkt.clouddn.com/Jay.jpg">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>STM32F767 PWM的基本用法 | 焦迪的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+
+
+</head>
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">焦迪</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">Shape of my heart.</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/802-11/">802.11</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AD7616/">AD7616</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Allegro/">Allegro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Buck/">Buck</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C#</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C2000/">C2000</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CCS/">CCS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cadence/">Cadence</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DCDC/">DCDC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DMA/">DMA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSP/">DSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/F28379D/">F28379D</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FMC/">FMC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flash/">Flash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPIO/">GPIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HDC1010/">HDC1010</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I2C/">I2C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IWDG/">IWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keil/">Keil</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MAC/">MAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MLCC/">MLCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MPU/">MPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Noise/">Noise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCB/">PCB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHY/">PHY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PWM/">PWM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pierce/">Pierce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyInstaller/">PyInstaller</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QUADSPI/">QUADSPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RTC/">RTC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDRAM/">SDRAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32CubeMX/">STM32CubeMX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32F7/">STM32F7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sensor/">Sensor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Systick/">Systick</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Timer/">Timer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UART/">UART</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WWDG/">WWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XDS100/">XDS100</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/crystal/">crystal</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interrupt/">interrupt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oscillator/">oscillator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serial/">serial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/串口/">串口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前馈电容/">前馈电容</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态响应/">动态响应</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/封装/">封装</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/差分线/">差分线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/等长线/">等长线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高速电路/">高速电路</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://zhangxb.tech/">张晓斌</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://gaomf.cn/">高明飞</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://tongzai.tech/">桐仔</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">雨下整夜，此刻初晴.</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">焦迪</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">焦迪</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">Shape of my heart.</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-stm32f767-pwm" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/05/07/stm32f767-pwm/" class="article-date">
+      <time datetime="2018-05-07T12:18:11.000Z" itemprop="datePublished">2018-05-07</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      STM32F767 PWM的基本用法
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/嵌入式/">嵌入式</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PWM/">PWM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/STM32F7/">STM32F7</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>&emsp;本文介绍STM32F767 PWM的基本用法。</p>
+<a id="more"></a>
+<h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><h3 id="硬件环境"><a href="#硬件环境" class="headerlink" title="硬件环境"></a>硬件环境</h3><ul>
+<li>电脑：Windows 10 Home x64</li>
+<li>Apollo STM32F767开发板(ST-LINK V2仿真器)</li>
+</ul>
+<h3 id="软件环境"><a href="#软件环境" class="headerlink" title="软件环境"></a>软件环境</h3><ul>
+<li>Keil Version 5.24.1 (Pack Installer：Keil.STM32F7xx_DFP.2.9.0.pack)</li>
+<li>STM32CubeMX Version 4.25.0(Packages Manager：STM32CubeF7)</li>
+</ul>
+<h2 id="TIM1主要特性"><a href="#TIM1主要特性" class="headerlink" title="TIM1主要特性"></a>TIM1主要特性</h2><p>&emsp;<code>TIM1/TIM8</code>为高级控制定时器，支持的PWM功能最为完善。本例将使用<code>TIM1</code>完成PWM实验：<code>输出3对互补并带有死区的PWM</code>。</p>
+<h3 id="系统框图"><a href="#系统框图" class="headerlink" title="系统框图"></a>系统框图</h3><p><img src="http://omcg8fk23.bkt.clouddn.com/stm32f767_pwm01.png" alt=""></p>
+<h3 id="主要特性"><a href="#主要特性" class="headerlink" title="主要特性"></a>主要特性</h3><p>&emsp;本次主要列出PWM的相关特性。</p>
+<ul>
+<li>多达6个独立通道，可以用于PWM生成(边沿与中心对齐模式)；</li>
+<li>带<code>可编程死区</code>的互补输出；</li>
+<li>2个断路输出，用于将定时器的输出信号置于用户可选的安全配置中。</li>
+</ul>
+<h2 id="PWM的基本用法"><a href="#PWM的基本用法" class="headerlink" title="PWM的基本用法"></a>PWM的基本用法</h2><h3 id="PWM参数设置"><a href="#PWM参数设置" class="headerlink" title="PWM参数设置"></a>PWM参数设置</h3><p>&emsp;PWM的初始化代码总体如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* TIM1 init function */</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">MX_TIM1_Init</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">  TIM_ClockConfigTypeDef sClockSourceConfig;</div><div class="line">  TIM_MasterConfigTypeDef sMasterConfig;</div><div class="line">  TIM_OC_InitTypeDef sConfigOC;</div><div class="line">  TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;</div><div class="line"></div><div class="line">  htim1.Instance = TIM1;</div><div class="line">  htim1.Init.Prescaler = <span class="number">216</span><span class="number">-1</span>;</div><div class="line">  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;</div><div class="line">  htim1.Init.Period = <span class="number">100</span><span class="number">-1</span>;</div><div class="line">  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;</div><div class="line">  htim1.Init.RepetitionCounter = <span class="number">0</span>;</div><div class="line">  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;</div><div class="line">  <span class="keyword">if</span> (HAL_TIM_Base_Init(&amp;htim1) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;</div><div class="line">  <span class="keyword">if</span> (HAL_TIM_ConfigClockSource(&amp;htim1, &amp;sClockSourceConfig) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (HAL_TIM_PWM_Init(&amp;htim1) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;</div><div class="line">  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;</div><div class="line">  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;</div><div class="line">  <span class="keyword">if</span> (HAL_TIMEx_MasterConfigSynchronization(&amp;htim1, &amp;sMasterConfig) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  sConfigOC.OCMode = TIM_OCMODE_PWM1;</div><div class="line">  sConfigOC.Pulse = <span class="number">20</span>;</div><div class="line">  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;</div><div class="line">  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;</div><div class="line">  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;</div><div class="line">  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;</div><div class="line">  sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;</div><div class="line">  <span class="keyword">if</span> (HAL_TIM_PWM_ConfigChannel(&amp;htim1, &amp;sConfigOC, TIM_CHANNEL_1) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  sConfigOC.Pulse = <span class="number">30</span>;</div><div class="line">  <span class="keyword">if</span> (HAL_TIM_PWM_ConfigChannel(&amp;htim1, &amp;sConfigOC, TIM_CHANNEL_2) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  sConfigOC.Pulse = <span class="number">40</span>;</div><div class="line">  sConfigOC.OCPolarity = TIM_OCPOLARITY_LOW;</div><div class="line">  sConfigOC.OCNPolarity = TIM_OCPOLARITY_LOW;</div><div class="line">  <span class="keyword">if</span> (HAL_TIM_PWM_ConfigChannel(&amp;htim1, &amp;sConfigOC, TIM_CHANNEL_3) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;</div><div class="line">  sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;</div><div class="line">  sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;</div><div class="line">  sBreakDeadTimeConfig.DeadTime = <span class="number">100</span>;</div><div class="line">  sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;</div><div class="line">  sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;</div><div class="line">  sBreakDeadTimeConfig.BreakFilter = <span class="number">0</span>;</div><div class="line">  sBreakDeadTimeConfig.Break2State = TIM_BREAK2_DISABLE;</div><div class="line">  sBreakDeadTimeConfig.Break2Polarity = TIM_BREAK2POLARITY_HIGH;</div><div class="line">  sBreakDeadTimeConfig.Break2Filter = <span class="number">0</span>;</div><div class="line">  sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;</div><div class="line">  <span class="keyword">if</span> (HAL_TIMEx_ConfigBreakDeadTime(&amp;htim1, &amp;sBreakDeadTimeConfig) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  HAL_TIM_MspPostInit(&amp;htim1);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;以下将对代码进行分析。</p>
+<h3 id="时基初始化"><a href="#时基初始化" class="headerlink" title="时基初始化"></a>时基初始化</h3><p>&emsp;时基初始化函数如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">htim1.Instance = TIM1;</div><div class="line">htim1.Init.Prescaler = <span class="number">216</span><span class="number">-1</span>;</div><div class="line">htim1.Init.CounterMode = TIM_COUNTERMODE_UP;</div><div class="line">htim1.Init.Period = <span class="number">100</span><span class="number">-1</span>;</div><div class="line">htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;</div><div class="line">htim1.Init.RepetitionCounter = <span class="number">0</span>;</div><div class="line">htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;</div><div class="line"><span class="keyword">if</span> (HAL_TIM_Base_Init(&amp;htim1) != HAL_OK)</div><div class="line">&#123;</div><div class="line">  _Error_Handler(__FILE__, __LINE__);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;时基单元的初始化在<code>timer</code>实验中已经介绍，这里不再叙述，其功能如下：</p>
+<ul>
+<li>TIM1使用<code>APB2</code>时钟，本例中<code>APB2</code>时钟频率为<code>216MHz</code>；</li>
+<li>定时器周期值为<code>100-1</code>，则一个周期内共计数<code>100</code>次；</li>
+<li>定时器预分频器值为<code>216-1</code>，则时钟频率为<code>1MHz</code>；</li>
+<li>定时器时钟频率为<code>1MHz</code>，计数值为<code>100</code>，则<code>定时器周期/PWM频率</code>为<code>10kHz</code>；</li>
+<li><code>TIMx_CR1</code>寄存器<code>CKD</code>位为0，则<code>死区时钟相对于TIM输入时钟不分频</code>。</li>
+</ul>
+<h3 id="时钟源选择"><a href="#时钟源选择" class="headerlink" title="时钟源选择"></a>时钟源选择</h3><p>&emsp;时钟源的选择通过如下函数实现。本例中时钟选择为内部时钟，即将<code>TIMx_SMCR</code>寄存器<code>SMS</code>控制位设置为<code>0000</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;</div><div class="line"><span class="keyword">if</span> (HAL_TIM_ConfigClockSource(&amp;htim1, &amp;sClockSourceConfig) != HAL_OK)</div><div class="line">&#123;</div><div class="line">  _Error_Handler(__FILE__, __LINE__);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="PWM初始化"><a href="#PWM初始化" class="headerlink" title="PWM初始化"></a>PWM初始化</h3><p>&emsp;PWM初始化代码如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (HAL_TIM_PWM_Init(&amp;htim1) != HAL_OK)</div><div class="line">&#123;</div><div class="line">  _Error_Handler(__FILE__, __LINE__);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Initializes the TIM PWM Time Base according to the specified</div><div class="line">  *         parameters in the TIM_HandleTypeDef and create the associated handle.</div><div class="line">  * @param  htim pointer to a TIM_HandleTypeDef structure that contains</div><div class="line">  *                the configuration information for TIM module.</div><div class="line">  * @retval HAL status</div><div class="line">  */</div><div class="line"><span class="function">HAL_StatusTypeDef <span class="title">HAL_TIM_PWM_Init</span><span class="params">(TIM_HandleTypeDef *htim)</span></span></div><div class="line">&#123;</div><div class="line">  <span class="comment">/* Check the TIM handle allocation */</span></div><div class="line">  <span class="keyword">if</span>(htim == <span class="literal">NULL</span>)</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">return</span> HAL_ERROR;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">/* Check the parameters */</span></div><div class="line">  assert_param(IS_TIM_INSTANCE(htim-&gt;Instance));</div><div class="line">  assert_param(IS_TIM_COUNTER_MODE(htim-&gt;Init.CounterMode));</div><div class="line">  assert_param(IS_TIM_CLOCKDIVISION_DIV(htim-&gt;Init.ClockDivision));</div><div class="line">  assert_param(IS_TIM_AUTORELOAD_PRELOAD(htim-&gt;Init.AutoReloadPreload));</div><div class="line"></div><div class="line">  <span class="keyword">if</span>(htim-&gt;State == HAL_TIM_STATE_RESET)</div><div class="line">  &#123;</div><div class="line">    <span class="comment">/* Allocate lock resource and initialize it */</span></div><div class="line">    htim-&gt;Lock = HAL_UNLOCKED;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> (USE_HAL_TIM_REGISTER_CALLBACKS == 1)</span></div><div class="line">    <span class="comment">/* Reset interrupt callbacks to legacy week callbacks */</span></div><div class="line">    TIM_ResetCallback(htim);</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(htim-&gt;PWM_MspInitCallback == <span class="literal">NULL</span>)</div><div class="line">    &#123;</div><div class="line">      htim-&gt;PWM_MspInitCallback = HAL_TIM_PWM_MspInit;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/* Init the low level hardware : GPIO, CLOCK, NVIC */</span></div><div class="line">    htim-&gt;PWM_MspInitCallback(htim);</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">    <span class="comment">/* Init the low level hardware : GPIO, CLOCK, NVIC and DMA */</span></div><div class="line">    HAL_TIM_PWM_MspInit(htim);</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* USE_HAL_TIM_REGISTER_CALLBACKS */</span></span></div><div class="line">  &#125;</div><div class="line">  <span class="comment">/* Set the TIM state */</span></div><div class="line">  htim-&gt;State= HAL_TIM_STATE_BUSY;  </div><div class="line">  </div><div class="line">  <span class="comment">/* Init the base time for the PWM */</span>  </div><div class="line">  TIM_Base_SetConfig(htim-&gt;Instance, &amp;htim-&gt;Init); </div><div class="line">   </div><div class="line">  <span class="comment">/* Initialize the TIM state*/</span></div><div class="line">  htim-&gt;State= HAL_TIM_STATE_READY;</div><div class="line">  </div><div class="line">  <span class="keyword">return</span> HAL_OK;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;实际上该函数并无实际意义。</p>
+<ul>
+<li><code>htim-&gt;State</code>在TIM时基初始化中已经更改为<code>HAL_TIM_STATE_READY</code>，所以判定条件以内函数不执行；</li>
+<li><code>TIM_Base_SetConfig()</code>函数已经在<code>HAL_TIM_Base_Init()</code>中首次调用，这里为二次调用，这期间时基配置并未进行任何更新。</li>
+</ul>
+<h3 id="主模式设置"><a href="#主模式设置" class="headerlink" title="主模式设置"></a>主模式设置</h3><p>&emsp;主模式设置代码如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;</div><div class="line">sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;</div><div class="line">sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;</div><div class="line"><span class="keyword">if</span> (HAL_TIMEx_MasterConfigSynchronization(&amp;htim1, &amp;sMasterConfig) != HAL_OK)</div><div class="line">&#123;</div><div class="line">  _Error_Handler(__FILE__, __LINE__);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;TIM1的主模式输出均为<code>RESET</code>状态，即只能通过寄存器<code>TIMx_EGR</code>的<code>UG</code>位生成更新事件。TIM1不进行主从模式控制。</p>
+<h3 id="PWM通道配置"><a href="#PWM通道配置" class="headerlink" title="PWM通道配置"></a>PWM通道配置</h3><p>&emsp;PWM通道配置代码如下所示，这里以<code>channel1</code>为例。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">sConfigOC.OCMode = TIM_OCMODE_PWM1;</div><div class="line">sConfigOC.Pulse = <span class="number">20</span>;</div><div class="line">sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;</div><div class="line">sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;</div><div class="line">sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;</div><div class="line">sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;</div><div class="line">sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;</div><div class="line"><span class="keyword">if</span> (HAL_TIM_PWM_ConfigChannel(&amp;htim1, &amp;sConfigOC, TIM_CHANNEL_1) != HAL_OK)</div><div class="line">&#123;</div><div class="line">  _Error_Handler(__FILE__, __LINE__);</div><div class="line">&#125;</div><div class="line"></div><div class="line">sConfigOC.Pulse = <span class="number">30</span>;</div><div class="line"><span class="keyword">if</span> (HAL_TIM_PWM_ConfigChannel(&amp;htim1, &amp;sConfigOC, TIM_CHANNEL_2) != HAL_OK)</div><div class="line">&#123;</div><div class="line">  _Error_Handler(__FILE__, __LINE__);</div><div class="line">&#125;</div><div class="line"></div><div class="line">sConfigOC.Pulse = <span class="number">40</span>;</div><div class="line">sConfigOC.OCPolarity = TIM_OCPOLARITY_LOW;</div><div class="line">sConfigOC.OCNPolarity = TIM_OCPOLARITY_LOW;</div><div class="line"><span class="keyword">if</span> (HAL_TIM_PWM_ConfigChannel(&amp;htim1, &amp;sConfigOC, TIM_CHANNEL_3) != HAL_OK)</div><div class="line">&#123;</div><div class="line">  _Error_Handler(__FILE__, __LINE__);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;初始化代码配置了PWM的基本参数：</p>
+<ul>
+<li>模式为<code>TIM_OCMODE_PWM1</code>；</li>
+<li><code>脉冲宽度</code>为<code>20</code>，考虑到<code>周期值</code>为<code>100</code>，如果不考虑死区即<code>占空比为20%</code>；</li>
+<li><code>OC</code>与<code>OCN</code>的极性均为<code>高电平</code>；</li>
+<li>禁用<code>FastMode</code>；</li>
+<li>空闲状态下为低电平。</li>
+</ul>
+<p>&emsp;PWM参数的配置通过<code>HAL_TIM_PWM_ConfigChannel()</code>函数实现。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Initializes the TIM PWM  channels according to the specified</div><div class="line">  *         parameters in the TIM_OC_InitTypeDef.</div><div class="line">  * @param  htim pointer to a TIM_HandleTypeDef structure that contains</div><div class="line">  *                the configuration information for TIM module.</div><div class="line">  * @param  sConfig TIM PWM configuration structure</div><div class="line">  * @param  Channel TIM Channels to be enabled.</div><div class="line">  *          This parameter can be one of the following values:</div><div class="line">  *            @arg TIM_CHANNEL_1: TIM Channel 1 selected</div><div class="line">  *            @arg TIM_CHANNEL_2: TIM Channel 2 selected</div><div class="line">  *            @arg TIM_CHANNEL_3: TIM Channel 3 selected</div><div class="line">  *            @arg TIM_CHANNEL_4: TIM Channel 4 selected</div><div class="line">  * @retval HAL status</div><div class="line">  */</div><div class="line">__<span class="function">weak HAL_StatusTypeDef <span class="title">HAL_TIM_PWM_ConfigChannel</span><span class="params">(TIM_HandleTypeDef *htim, TIM_OC_InitTypeDef* sConfig, <span class="keyword">uint32_t</span> Channel)</span></span></div><div class="line">&#123;</div><div class="line">  __HAL_LOCK(htim);</div><div class="line">  </div><div class="line">  <span class="comment">/* Check the parameters */</span> </div><div class="line">  assert_param(IS_TIM_CHANNELS(Channel)); </div><div class="line">  assert_param(IS_TIM_PWM_MODE(sConfig-&gt;OCMode));</div><div class="line">  assert_param(IS_TIM_OC_POLARITY(sConfig-&gt;OCPolarity));</div><div class="line">  assert_param(IS_TIM_FAST_STATE(sConfig-&gt;OCFastMode)); </div><div class="line">  </div><div class="line">  htim-&gt;State = HAL_TIM_STATE_BUSY;</div><div class="line">    </div><div class="line">  <span class="keyword">switch</span> (Channel)</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">case</span> TIM_CHANNEL_1:</div><div class="line">    &#123;</div><div class="line">      assert_param(IS_TIM_CC1_INSTANCE(htim-&gt;Instance));</div><div class="line">      <span class="comment">/* Configure the Channel 1 in PWM mode */</span></div><div class="line">      TIM_OC1_SetConfig(htim-&gt;Instance, sConfig);</div><div class="line">      </div><div class="line">      <span class="comment">/* Set the Preload enable bit for channel1 */</span></div><div class="line">      htim-&gt;Instance-&gt;CCMR1 |= TIM_CCMR1_OC1PE;</div><div class="line">      </div><div class="line">      <span class="comment">/* Configure the Output Fast mode */</span></div><div class="line">      htim-&gt;Instance-&gt;CCMR1 &amp;= ~TIM_CCMR1_OC1FE;</div><div class="line">      htim-&gt;Instance-&gt;CCMR1 |= sConfig-&gt;OCFastMode;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">break</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">case</span> TIM_CHANNEL_2:</div><div class="line">    &#123;</div><div class="line">      assert_param(IS_TIM_CC2_INSTANCE(htim-&gt;Instance));</div><div class="line">      <span class="comment">/* Configure the Channel 2 in PWM mode */</span></div><div class="line">      TIM_OC2_SetConfig(htim-&gt;Instance, sConfig);</div><div class="line">      </div><div class="line">      <span class="comment">/* Set the Preload enable bit for channel2 */</span></div><div class="line">      htim-&gt;Instance-&gt;CCMR1 |= TIM_CCMR1_OC2PE;</div><div class="line">      </div><div class="line">      <span class="comment">/* Configure the Output Fast mode */</span></div><div class="line">      htim-&gt;Instance-&gt;CCMR1 &amp;= ~TIM_CCMR1_OC2FE;</div><div class="line">      htim-&gt;Instance-&gt;CCMR1 |= sConfig-&gt;OCFastMode &lt;&lt; <span class="number">8</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">break</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">case</span> TIM_CHANNEL_3:</div><div class="line">    &#123;</div><div class="line">      assert_param(IS_TIM_CC3_INSTANCE(htim-&gt;Instance));</div><div class="line">      <span class="comment">/* Configure the Channel 3 in PWM mode */</span></div><div class="line">      TIM_OC3_SetConfig(htim-&gt;Instance, sConfig);</div><div class="line">      </div><div class="line">      <span class="comment">/* Set the Preload enable bit for channel3 */</span></div><div class="line">      htim-&gt;Instance-&gt;CCMR2 |= TIM_CCMR2_OC3PE;</div><div class="line">      </div><div class="line">     <span class="comment">/* Configure the Output Fast mode */</span></div><div class="line">      htim-&gt;Instance-&gt;CCMR2 &amp;= ~TIM_CCMR2_OC3FE;</div><div class="line">      htim-&gt;Instance-&gt;CCMR2 |= sConfig-&gt;OCFastMode;  </div><div class="line">    &#125;</div><div class="line">    <span class="keyword">break</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">case</span> TIM_CHANNEL_4:</div><div class="line">    &#123;</div><div class="line">      assert_param(IS_TIM_CC4_INSTANCE(htim-&gt;Instance));</div><div class="line">      <span class="comment">/* Configure the Channel 4 in PWM mode */</span></div><div class="line">      TIM_OC4_SetConfig(htim-&gt;Instance, sConfig);</div><div class="line">      </div><div class="line">      <span class="comment">/* Set the Preload enable bit for channel4 */</span></div><div class="line">      htim-&gt;Instance-&gt;CCMR2 |= TIM_CCMR2_OC4PE;</div><div class="line">      </div><div class="line">     <span class="comment">/* Configure the Output Fast mode */</span></div><div class="line">      htim-&gt;Instance-&gt;CCMR2 &amp;= ~TIM_CCMR2_OC4FE;</div><div class="line">      htim-&gt;Instance-&gt;CCMR2 |= sConfig-&gt;OCFastMode &lt;&lt; <span class="number">8</span>;  </div><div class="line">    &#125;</div><div class="line">    <span class="keyword">break</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">default</span>:</div><div class="line">    <span class="keyword">break</span>;    </div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  htim-&gt;State = HAL_TIM_STATE_READY;</div><div class="line">    </div><div class="line">  __HAL_UNLOCK(htim);</div><div class="line">  </div><div class="line">  <span class="keyword">return</span> HAL_OK;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Time Output Compare 1 configuration</div><div class="line">  * @param  TIMx to select the TIM peripheral</div><div class="line">  * @param  OC_Config The output configuration structure</div><div class="line">  * @retval None</div><div class="line">  */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">TIM_OC1_SetConfig</span><span class="params">(TIM_TypeDef *TIMx, TIM_OC_InitTypeDef *OC_Config)</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">uint32_t</span> tmpccmrx = <span class="number">0</span>;</div><div class="line">  <span class="keyword">uint32_t</span> tmpccer = <span class="number">0</span>;</div><div class="line">  <span class="keyword">uint32_t</span> tmpcr2 = <span class="number">0</span>;  </div><div class="line"></div><div class="line">  <span class="comment">/* Disable the Channel 1: Reset the CC1E Bit */</span></div><div class="line">  TIMx-&gt;CCER &amp;= ~TIM_CCER_CC1E;</div><div class="line">  </div><div class="line">  <span class="comment">/* Get the TIMx CCER register value */</span></div><div class="line">  tmpccer = TIMx-&gt;CCER;</div><div class="line">  <span class="comment">/* Get the TIMx CR2 register value */</span></div><div class="line">  tmpcr2 = TIMx-&gt;CR2;</div><div class="line">  </div><div class="line">  <span class="comment">/* Get the TIMx CCMR1 register value */</span></div><div class="line">  tmpccmrx = TIMx-&gt;CCMR1;</div><div class="line">    </div><div class="line">  <span class="comment">/* Reset the Output Compare Mode Bits */</span></div><div class="line">  tmpccmrx &amp;= ~TIM_CCMR1_OC1M;</div><div class="line">  tmpccmrx &amp;= ~TIM_CCMR1_CC1S;</div><div class="line">  <span class="comment">/* Select the Output Compare Mode */</span></div><div class="line">  tmpccmrx |= OC_Config-&gt;OCMode;</div><div class="line">  </div><div class="line">  <span class="comment">/* Reset the Output Polarity level */</span></div><div class="line">  tmpccer &amp;= ~TIM_CCER_CC1P;</div><div class="line">  <span class="comment">/* Set the Output Compare Polarity */</span></div><div class="line">  tmpccer |= OC_Config-&gt;OCPolarity;</div><div class="line"></div><div class="line">    </div><div class="line">  <span class="keyword">if</span>(IS_TIM_ADVANCED_INSTANCE(TIMx) != RESET)</div><div class="line">  &#123;   </div><div class="line">    <span class="comment">/* Reset the Output N Polarity level */</span></div><div class="line">    tmpccer &amp;= ~TIM_CCER_CC1NP;</div><div class="line">    <span class="comment">/* Set the Output N Polarity */</span></div><div class="line">    tmpccer |= OC_Config-&gt;OCNPolarity;</div><div class="line">    <span class="comment">/* Reset the Output N State */</span></div><div class="line">    tmpccer &amp;= ~TIM_CCER_CC1NE;</div><div class="line">    </div><div class="line">    <span class="comment">/* Reset the Output Compare and Output Compare N IDLE State */</span></div><div class="line">    tmpcr2 &amp;= ~TIM_CR2_OIS1;</div><div class="line">    tmpcr2 &amp;= ~TIM_CR2_OIS1N;</div><div class="line">    <span class="comment">/* Set the Output Idle state */</span></div><div class="line">    tmpcr2 |= OC_Config-&gt;OCIdleState;</div><div class="line">    <span class="comment">/* Set the Output N Idle state */</span></div><div class="line">    tmpcr2 |= OC_Config-&gt;OCNIdleState;</div><div class="line">  &#125;</div><div class="line">  <span class="comment">/* Write to TIMx CR2 */</span></div><div class="line">  TIMx-&gt;CR2 = tmpcr2;</div><div class="line">  </div><div class="line">  <span class="comment">/* Write to TIMx CCMR1 */</span></div><div class="line">  TIMx-&gt;CCMR1 = tmpccmrx;</div><div class="line">  </div><div class="line">  <span class="comment">/* Set the Capture Compare Register value */</span></div><div class="line">  TIMx-&gt;CCR1 = OC_Config-&gt;Pulse;</div><div class="line">  </div><div class="line">  <span class="comment">/* Write to TIMx CCER */</span></div><div class="line">  TIMx-&gt;CCER = tmpccer;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;代码功能如下：</p>
+<ul>
+<li><code>TIMx-&gt;CCER</code>寄存器<code>CC1E</code>位复位，禁用<code>OC1</code>；</li>
+<li><code>tmpccer</code>保存<code>TIMx-&gt;CCER</code>值，<code>tmpcr2</code>保存<code>TIMx-&gt;CR2</code>值，<code>tmpccmrx</code>保存<code>TIMx-&gt;CCMR1</code>值；</li>
+<li><code>tmpccmrx</code>复位<code>OC1M</code>与<code>CC1S</code>位；<code>CC1S</code>被复位后，代表<code>OC1</code>通道被设置为输出模式；</li>
+<li><code>tmpccmrx</code>写入<code>OCMode</code>，本例中<code>OCMode</code>配置为<code>TIM_OCMODE_PWM1</code>，即对应<code>OC1M</code>配置为<code>0b0110</code>，即为PWM模式1：当计数器处于增计数时，<code>TIMx_CNT&lt;TIMx_CCR1</code>时<code>channel1</code>为<code>active</code>；</li>
+<li><code>tmpccer</code>复位<code>CC1P</code>，并写入<code>active</code>状态的电平，本例为<code>active</code>对应高电平；</li>
+<li>TIM1为高级控制定时器，可以输出互补PWM，则有<code>tmpccer</code>复位<code>CC1NP</code>位，并写入<code>active</code>状态的电平，本例为<code>active</code>对应高电平；</li>
+<li><code>tmpccer</code>复位<code>CC1NE</code>位，则<code>OC1N</code>输出关闭；</li>
+<li><code>tmpcr2</code>复位<code>OIS1</code>与<code>OIS1N</code>位，并写入<code>OC</code>输出空闲的状态，本例对应均为输出空闲状态为复位状态；</li>
+<li><code>TIMx-&gt;CR2</code>寄存器写入<code>tmpcr2</code>值；</li>
+<li><code>TIMx-&gt;CCMR1</code>寄存器写入<code>tmpccmrx</code>值；</li>
+<li><code>TIMx-&gt;CCR1</code>寄存器写入脉宽值，决定了PWM的占空比；</li>
+<li><code>TIMx-&gt;CCER</code>寄存器写入<code>tmpccer</code>值；</li>
+<li><code>TIMx-&gt;CCMR1</code>寄存器置位<code>OC1PE</code>位，使能<code>OC1</code>预装载；</li>
+<li><code>TIMx-&gt;CCMR1</code>寄存器复位<code>OC1PE</code>并写入<code>OCFastMode</code>值，本例为禁止<code>fast</code>模式。<code>fast</code>模式进对于输入比较有效，此处配置无意义；</li>
+<li>注意<code>channel1</code>与<code>channel2</code>配置<code>OC</code>有效电平为<code>高电平</code>，<code>channel3</code>配置<code>OC</code>有效电平为<code>低电平</code>；</li>
+</ul>
+<h3 id="Break与DeadTime配置"><a href="#Break与DeadTime配置" class="headerlink" title="Break与DeadTime配置"></a>Break与DeadTime配置</h3><p>&emsp;<code>Break</code>与<code>DeadTime</code>配置代码如下所示。其中最主要的设置为设置<code>死区时间为100</code>。</p>
+<p>&emsp;在时基初始化中，<code>PWM死区的时钟相对TIM输入时钟不进行分频</code>，本例中即为<code>216MHz</code>(PWM死区的时钟周期定义为<code>Tdts</code>)。死区的设置通过<code>TIMx_BDTR</code>寄存器的<code>DTG</code>位实现：</p>
+<ul>
+<li>$DTG[7:5]=0xx$时，$DT=DTG[7:0] \cdot Tdt$g，其中 $Tdtg=Tdts$，则等效可以设置的$Tdts$周期数为0~127；</li>
+<li>$DTG[7:5]=10x$时，$DT=(64+DTG[5:0]) \cdot Tdtg$，其中$Tdtg=2 \cdot Tdts$，则等效可以设置的$Tdts$周期数为128~254；</li>
+<li>$DTG[7:5]=11x$时，$DT=(32+DTG[ 4:0]) \cdot Tdtg$，其中$Tdtg=8 \cdot Tdts$，则等效可以设置的$Tdts$周期数为256~504；</li>
+<li>$DTG[7:5]=111$时，$DT=(32+DTG[ 4:0]) \cdot Tdtg$，其中$Tdtg= 16 \cdot Tdts$，则等效可以设置的$Tdts$周期数为512~1008；</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line">sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;</div><div class="line">sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;</div><div class="line">sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;</div><div class="line">sBreakDeadTimeConfig.DeadTime = <span class="number">100</span>;</div><div class="line">sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;</div><div class="line">sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;</div><div class="line">sBreakDeadTimeConfig.BreakFilter = <span class="number">0</span>;</div><div class="line">sBreakDeadTimeConfig.Break2State = TIM_BREAK2_DISABLE;</div><div class="line">sBreakDeadTimeConfig.Break2Polarity = TIM_BREAK2POLARITY_HIGH;</div><div class="line">sBreakDeadTimeConfig.Break2Filter = <span class="number">0</span>;</div><div class="line">sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;</div><div class="line"><span class="keyword">if</span> (HAL_TIMEx_ConfigBreakDeadTime(&amp;htim1, &amp;sBreakDeadTimeConfig) != HAL_OK)</div><div class="line">&#123;</div><div class="line">  _Error_Handler(__FILE__, __LINE__);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief   Configures the Break feature, dead time, Lock level, OSSI/OSSR State</div><div class="line">  *         and the AOE(automatic output enable).</div><div class="line">  * @param  htim pointer to a TIM_HandleTypeDef structure that contains</div><div class="line">  *                the configuration information for TIM module.</div><div class="line">  * @param  sBreakDeadTimeConfig pointer to a TIM_ConfigBreakDeadConfig_TypeDef structure that</div><div class="line">  *         contains the BDTR Register configuration  information for the TIM peripheral. </div><div class="line">  * @retval HAL status</div><div class="line">  */ </div><div class="line"><span class="function">HAL_StatusTypeDef <span class="title">HAL_TIMEx_ConfigBreakDeadTime</span><span class="params">(TIM_HandleTypeDef *htim, </span></span></div><div class="line">                                              TIM_BreakDeadTimeConfigTypeDef * sBreakDeadTimeConfig)</div><div class="line">&#123;</div><div class="line">  <span class="keyword">uint32_t</span> tmpbdtr = <span class="number">0</span>;</div><div class="line">  </div><div class="line">  <span class="comment">/* Check the parameters */</span></div><div class="line">  assert_param(IS_TIM_BREAK_INSTANCE(htim-&gt;Instance));</div><div class="line">  assert_param(IS_TIM_OSSR_STATE(sBreakDeadTimeConfig-&gt;OffStateRunMode));</div><div class="line">  assert_param(IS_TIM_OSSI_STATE(sBreakDeadTimeConfig-&gt;OffStateIDLEMode));</div><div class="line">  assert_param(IS_TIM_LOCK_LEVEL(sBreakDeadTimeConfig-&gt;LockLevel));</div><div class="line">  assert_param(IS_TIM_DEADTIME(sBreakDeadTimeConfig-&gt;DeadTime));</div><div class="line">  assert_param(IS_TIM_BREAK_STATE(sBreakDeadTimeConfig-&gt;BreakState));</div><div class="line">  assert_param(IS_TIM_BREAK_POLARITY(sBreakDeadTimeConfig-&gt;BreakPolarity));</div><div class="line">  assert_param(IS_TIM_BREAK_FILTER(sBreakDeadTimeConfig-&gt;BreakFilter));</div><div class="line">  assert_param(IS_TIM_AUTOMATIC_OUTPUT_STATE(sBreakDeadTimeConfig-&gt;AutomaticOutput));</div><div class="line">  assert_param(IS_TIM_BREAK2_STATE(sBreakDeadTimeConfig-&gt;Break2State));</div><div class="line">  assert_param(IS_TIM_BREAK2_POLARITY(sBreakDeadTimeConfig-&gt;Break2Polarity));</div><div class="line">  assert_param(IS_TIM_BREAK_FILTER(sBreakDeadTimeConfig-&gt;Break2Filter));</div><div class="line">  </div><div class="line">  <span class="comment">/* Check input state */</span></div><div class="line">  __HAL_LOCK(htim);</div><div class="line"></div><div class="line">  <span class="comment">/* Set the Lock level, the Break enable Bit and the Polarity, the OSSR State,</span></div><div class="line">     the OSSI State, the dead time value and the Automatic Output Enable Bit */</div><div class="line">  <span class="comment">/* Set the BDTR bits */</span></div><div class="line">  MODIFY_REG(tmpbdtr, TIM_BDTR_DTG, sBreakDeadTimeConfig-&gt;DeadTime);</div><div class="line">  MODIFY_REG(tmpbdtr, TIM_BDTR_LOCK, sBreakDeadTimeConfig-&gt;LockLevel);</div><div class="line">  MODIFY_REG(tmpbdtr, TIM_BDTR_OSSI, sBreakDeadTimeConfig-&gt;OffStateIDLEMode);</div><div class="line">  MODIFY_REG(tmpbdtr, TIM_BDTR_OSSR, sBreakDeadTimeConfig-&gt;OffStateRunMode);</div><div class="line">  MODIFY_REG(tmpbdtr, TIM_BDTR_BKE, sBreakDeadTimeConfig-&gt;BreakState);</div><div class="line">  MODIFY_REG(tmpbdtr, TIM_BDTR_BKP, sBreakDeadTimeConfig-&gt;BreakPolarity);</div><div class="line">  MODIFY_REG(tmpbdtr, TIM_BDTR_AOE, sBreakDeadTimeConfig-&gt;AutomaticOutput);</div><div class="line">  MODIFY_REG(tmpbdtr, TIM_BDTR_MOE, sBreakDeadTimeConfig-&gt;AutomaticOutput);</div><div class="line">  MODIFY_REG(tmpbdtr, TIM_BDTR_BKF, (sBreakDeadTimeConfig-&gt;BreakFilter &lt;&lt; BDTR_BKF_SHIFT));</div><div class="line">  </div><div class="line">  <span class="keyword">if</span> (IS_TIM_BKIN2_INSTANCE(htim-&gt;Instance))</div><div class="line">  &#123;</div><div class="line">    assert_param(IS_TIM_BREAK2_STATE(sBreakDeadTimeConfig-&gt;Break2State));</div><div class="line">    assert_param(IS_TIM_BREAK2_POLARITY(sBreakDeadTimeConfig-&gt;Break2Polarity));</div><div class="line">    assert_param(IS_TIM_BREAK_FILTER(sBreakDeadTimeConfig-&gt;Break2Filter));</div><div class="line">    </div><div class="line">    <span class="comment">/* Set the BREAK2 input related BDTR bits */</span></div><div class="line">    MODIFY_REG(tmpbdtr, TIM_BDTR_BK2F, (sBreakDeadTimeConfig-&gt;Break2Filter &lt;&lt; BDTR_BK2F_SHIFT));</div><div class="line">    MODIFY_REG(tmpbdtr, TIM_BDTR_BK2E, sBreakDeadTimeConfig-&gt;Break2State);</div><div class="line">    MODIFY_REG(tmpbdtr, TIM_BDTR_BK2P, sBreakDeadTimeConfig-&gt;Break2Polarity);</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="comment">/* Set TIMx_BDTR */</span></div><div class="line">  htim-&gt;Instance-&gt;BDTR = tmpbdtr;</div><div class="line">  </div><div class="line">  __HAL_UNLOCK(htim);</div><div class="line">  </div><div class="line">  <span class="keyword">return</span> HAL_OK;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;对代码的分析如下：</p>
+<ul>
+<li>死区时间设置为<code>100</code>，即为<code>0b0110 0100</code>，所以对应的死区时间为<code>100</code>个$Tdts$周期数，即为<code>463ns</code>；</li>
+<li>运行模式下与空闲模式下处于无效状态时，设置为<code>禁止OC/OCN输出</code>；</li>
+<li>锁定配置不生效；</li>
+<li>Break功能本例不涉及，全部禁用状态。</li>
+</ul>
+<h3 id="硬件初始化"><a href="#硬件初始化" class="headerlink" title="硬件初始化"></a>硬件初始化</h3><p>&emsp;硬件初始化函数如下所示。硬件初始化即为对PWM IO的初始化，这里不再说明。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">HAL_TIM_MspPostInit</span><span class="params">(TIM_HandleTypeDef* timHandle)</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">  GPIO_InitTypeDef GPIO_InitStruct;</div><div class="line">  <span class="keyword">if</span>(timHandle-&gt;Instance==TIM1)</div><div class="line">  &#123;</div><div class="line">  <span class="comment">/* USER CODE BEGIN TIM1_MspPostInit 0 */</span></div><div class="line"></div><div class="line">  <span class="comment">/* USER CODE END TIM1_MspPostInit 0 */</span></div><div class="line">  </div><div class="line">    <span class="comment">/**TIM1 GPIO Configuration    </span></div><div class="line">    PE11     ------&gt; TIM1_CH2</div><div class="line">    PE13     ------&gt; TIM1_CH3</div><div class="line">    PB13     ------&gt; TIM1_CH1N</div><div class="line">    PB14     ------&gt; TIM1_CH2N</div><div class="line">    PB15     ------&gt; TIM1_CH3N</div><div class="line">    PA8     ------&gt; TIM1_CH1 </div><div class="line">    */</div><div class="line">    GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_13;</div><div class="line">    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;</div><div class="line">    GPIO_InitStruct.Pull = GPIO_NOPULL;</div><div class="line">    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;</div><div class="line">    GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;</div><div class="line">    HAL_GPIO_Init(GPIOE, &amp;GPIO_InitStruct);</div><div class="line"></div><div class="line">    GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;</div><div class="line">    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;</div><div class="line">    GPIO_InitStruct.Pull = GPIO_NOPULL;</div><div class="line">    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;</div><div class="line">    GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;</div><div class="line">    HAL_GPIO_Init(GPIOB, &amp;GPIO_InitStruct);</div><div class="line"></div><div class="line">    GPIO_InitStruct.Pin = GPIO_PIN_8;</div><div class="line">    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;</div><div class="line">    GPIO_InitStruct.Pull = GPIO_NOPULL;</div><div class="line">    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;</div><div class="line">    GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;</div><div class="line">    HAL_GPIO_Init(GPIOA, &amp;GPIO_InitStruct);</div><div class="line"></div><div class="line">  <span class="comment">/* USER CODE BEGIN TIM1_MspPostInit 1 */</span></div><div class="line"></div><div class="line">  <span class="comment">/* USER CODE END TIM1_MspPostInit 1 */</span></div><div class="line">  &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="使能PWM输出"><a href="#使能PWM输出" class="headerlink" title="使能PWM输出"></a>使能PWM输出</h3><p>&emsp;使能PWM输出的函数如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">HAL_TIM_PWM_Start(&amp;htim1, TIM_CHANNEL_1);</div><div class="line">HAL_TIMEx_PWMN_Start(&amp;htim1, TIM_CHANNEL_1); <span class="comment">// turn on complementary channel</span></div><div class="line">  </div><div class="line">HAL_TIM_PWM_Start(&amp;htim1, TIM_CHANNEL_2);</div><div class="line">HAL_TIMEx_PWMN_Start(&amp;htim1, TIM_CHANNEL_2); <span class="comment">// turn on complementary channel</span></div><div class="line">  </div><div class="line">HAL_TIM_PWM_Start(&amp;htim1, TIM_CHANNEL_3);</div><div class="line">HAL_TIMEx_PWMN_Start(&amp;htim1, TIM_CHANNEL_3); <span class="comment">// turn on complementary channel</span></div></pre></td></tr></table></figure>
+<p>&emsp;以<code>channel1</code>为例，其具体实现如下。首先为PWM信号生成使能。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Starts the PWM signal generation.</div><div class="line">  * @param  htim pointer to a TIM_HandleTypeDef structure that contains</div><div class="line">  *                the configuration information for TIM module.</div><div class="line">  * @param  Channel TIM Channels to be enabled.</div><div class="line">  *          This parameter can be one of the following values:</div><div class="line">  *            @arg TIM_CHANNEL_1: TIM Channel 1 selected</div><div class="line">  *            @arg TIM_CHANNEL_2: TIM Channel 2 selected</div><div class="line">  *            @arg TIM_CHANNEL_3: TIM Channel 3 selected</div><div class="line">  *            @arg TIM_CHANNEL_4: TIM Channel 4 selected</div><div class="line">  * @retval HAL status</div><div class="line">  */</div><div class="line"><span class="function">HAL_StatusTypeDef <span class="title">HAL_TIM_PWM_Start</span><span class="params">(TIM_HandleTypeDef *htim, <span class="keyword">uint32_t</span> Channel)</span></span></div><div class="line">&#123;</div><div class="line">  <span class="comment">/* Check the parameters */</span></div><div class="line">  assert_param(IS_TIM_CCX_INSTANCE(htim-&gt;Instance, Channel));</div><div class="line"></div><div class="line">  <span class="comment">/* Enable the Capture compare channel */</span></div><div class="line">  TIM_CCxChannelCmd(htim-&gt;Instance, Channel, TIM_CCx_ENABLE);</div><div class="line">  </div><div class="line">  <span class="keyword">if</span>(IS_TIM_ADVANCED_INSTANCE(htim-&gt;Instance) != RESET)  </div><div class="line">  &#123;</div><div class="line">    <span class="comment">/* Enable the main output */</span></div><div class="line">    __HAL_TIM_MOE_ENABLE(htim);</div><div class="line">  &#125;</div><div class="line">    </div><div class="line">  <span class="comment">/* Enable the Peripheral */</span></div><div class="line">  __HAL_TIM_ENABLE(htim);</div><div class="line">  </div><div class="line">  <span class="comment">/* Return function status */</span></div><div class="line">  <span class="keyword">return</span> HAL_OK;</div><div class="line">&#125; </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">TIM_CCxChannelCmd</span><span class="params">(TIM_TypeDef* TIMx, <span class="keyword">uint32_t</span> Channel, <span class="keyword">uint32_t</span> ChannelState)</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">uint32_t</span> tmp = <span class="number">0</span>;</div><div class="line"></div><div class="line">  <span class="comment">/* Check the parameters */</span></div><div class="line">  assert_param(IS_TIM_CC1_INSTANCE(TIMx)); </div><div class="line">  assert_param(IS_TIM_CHANNELS(Channel));</div><div class="line"></div><div class="line">  tmp = TIM_CCER_CC1E &lt;&lt; Channel;</div><div class="line"></div><div class="line">  <span class="comment">/* Reset the CCxE Bit */</span></div><div class="line">  TIMx-&gt;CCER &amp;= ~tmp;</div><div class="line"></div><div class="line">  <span class="comment">/* Set or reset the CCxE Bit */</span> </div><div class="line">  TIMx-&gt;CCER |= (<span class="keyword">uint32_t</span>)(ChannelState &lt;&lt; Channel);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Enable the TIM main Output.</div><div class="line">  * @param  __HANDLE__ TIM handle</div><div class="line">  * @retval None</div><div class="line">  */</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __HAL_TIM_MOE_ENABLE(__HANDLE__)             ((__HANDLE__)-&gt;Instance-&gt;BDTR|=(TIM_BDTR_MOE))</span></div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Enable the TIM peripheral.</div><div class="line">  * @param  __HANDLE__ TIM handle</div><div class="line">  * @retval None</div><div class="line"> */</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __HAL_TIM_ENABLE(__HANDLE__)                 ((__HANDLE__)-&gt;Instance-&gt;CR1|=(TIM_CR1_CEN))</span></div></pre></td></tr></table></figure>
+<p>&emsp;代码功能主要为：</p>
+<ul>
+<li><code>TIMx_CCER</code>寄存器<code>CCxE</code>位置位，代表<code>OC</code>开启，信号输出到对应引脚；</li>
+<li><code>TIMx_BDTR</code>寄存器<code>MOE</code>位置位，<code>主输出使能开启</code>，当<code>CCxE</code>与<code>CCxNE</code>使能时，则使能<code>OC</code>与<code>OCN</code>；</li>
+<li><code>TIMx_CR1</code>寄存器<code>CEN</code>置位，<code>使能计数器</code>；</li>
+</ul>
+<p>&emsp;PWM的互补对使能如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Starts the PWM signal generation on the complementary output.</div><div class="line">  * @param  htim pointer to a TIM_HandleTypeDef structure that contains</div><div class="line">  *                the configuration information for TIM module.</div><div class="line">  * @param  Channel TIM Channel to be enabled.</div><div class="line">  *          This parameter can be one of the following values:</div><div class="line">  *            @arg TIM_CHANNEL_1: TIM Channel 1 selected</div><div class="line">  *            @arg TIM_CHANNEL_2: TIM Channel 2 selected</div><div class="line">  *            @arg TIM_CHANNEL_3: TIM Channel 3 selected</div><div class="line">  * @retval HAL status</div><div class="line">  */</div><div class="line"><span class="function">HAL_StatusTypeDef <span class="title">HAL_TIMEx_PWMN_Start</span><span class="params">(TIM_HandleTypeDef *htim, <span class="keyword">uint32_t</span> Channel)</span></span></div><div class="line">&#123;</div><div class="line">  <span class="comment">/* Check the parameters */</span></div><div class="line">  assert_param(IS_TIM_CCXN_INSTANCE(htim-&gt;Instance, Channel)); </div><div class="line">  </div><div class="line">  <span class="comment">/* Enable the complementary PWM output  */</span></div><div class="line">  TIM_CCxNChannelCmd(htim-&gt;Instance, Channel, TIM_CCxN_ENABLE);</div><div class="line">  </div><div class="line">  <span class="comment">/* Enable the Main Output */</span></div><div class="line">  __HAL_TIM_MOE_ENABLE(htim);</div><div class="line">  </div><div class="line">  <span class="comment">/* Enable the Peripheral */</span></div><div class="line">  __HAL_TIM_ENABLE(htim);</div><div class="line">  </div><div class="line">  <span class="comment">/* Return function status */</span></div><div class="line">  <span class="keyword">return</span> HAL_OK;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;代码功能主要为：</p>
+<ul>
+<li><code>TIMx_CCER</code>寄存器<code>CCxNE</code>位置位，代表<code>OCN</code>开启，信号输出到对应引脚；</li>
+<li>与PWM主信号一致，使能MOE位并使能定时器。</li>
+</ul>
+<h3 id="测试程序"><a href="#测试程序" class="headerlink" title="测试程序"></a>测试程序</h3><p>&emsp;按照上述配置进行测试，得到的波形信息如下。</p>
+<p><img src="http://omcg8fk23.bkt.clouddn.com/stm32f767_pwm02.png" alt=""></p>
+<ul>
+<li>其中占空比分别接近20%、30%、60%(channel3为反相)；</li>
+<li>死区时间约为460ns，与理论值接近。</li>
+</ul>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/05/07/stm32f767-pwm/">STM32F767 PWM的基本用法</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">焦迪</a></p>
+        <p><span>发布时间:</span>2018-05-07, 20:18:11</p>
+        <p><span>最后更新:</span>2018-05-13, 00:28:42</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/05/07/stm32f767-pwm/" title="STM32F767 PWM的基本用法">http://jiaodi.tech/2018/05/07/stm32f767-pwm/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://jiaodi.tech/2018/05/07/stm32f767-pwm/　　作者: 焦迪" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/05/19/stm32f767-uart-dma/">
+                    STM32F767 DMA的基本用法
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/04/28/feedforward-cap/">
+                    优化前馈电容改善DCDC的瞬态响应(未完成)
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开发环境"><span class="toc-number">1.</span> <span class="toc-text">开发环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件环境"><span class="toc-number">1.1.</span> <span class="toc-text">硬件环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#软件环境"><span class="toc-number">1.2.</span> <span class="toc-text">软件环境</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TIM1主要特性"><span class="toc-number">2.</span> <span class="toc-text">TIM1主要特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#系统框图"><span class="toc-number">2.1.</span> <span class="toc-text">系统框图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主要特性"><span class="toc-number">2.2.</span> <span class="toc-text">主要特性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PWM的基本用法"><span class="toc-number">3.</span> <span class="toc-text">PWM的基本用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PWM参数设置"><span class="toc-number">3.1.</span> <span class="toc-text">PWM参数设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#时基初始化"><span class="toc-number">3.2.</span> <span class="toc-text">时基初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#时钟源选择"><span class="toc-number">3.3.</span> <span class="toc-text">时钟源选择</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PWM初始化"><span class="toc-number">3.4.</span> <span class="toc-text">PWM初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主模式设置"><span class="toc-number">3.5.</span> <span class="toc-text">主模式设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PWM通道配置"><span class="toc-number">3.6.</span> <span class="toc-text">PWM通道配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Break与DeadTime配置"><span class="toc-number">3.7.</span> <span class="toc-text">Break与DeadTime配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件初始化"><span class="toc-number">3.8.</span> <span class="toc-text">硬件初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使能PWM输出"><span class="toc-number">3.9.</span> <span class="toc-text">使能PWM输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试程序"><span class="toc-number">3.10.</span> <span class="toc-text">测试程序</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/05/07/stm32f767-pwm/" data-title="STM32F767 PWM的基本用法" data-url="http://jiaodi.tech/2018/05/07/stm32f767-pwm/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"null"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/05/19/stm32f767-uart-dma/" title="上一篇: STM32F767 DMA的基本用法">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/04/28/feedforward-cap/" title="下一篇: 优化前馈电容改善DCDC的瞬态响应(未完成)">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/08/11/stm32f767-fmc-ad7616/">利用SMT32F767驱动AD7616</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/stm32f767-mpu/">STM32F767 MPU的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/16/stm32f767-sdram/">STM32F767 FMC-SDRAM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/30/stm32f767-qspi/">STM32F767 QUADSPI的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/27/stm32f767-flash/">STM32F767 Flash的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/21/stm32f767-rtc/">STM32F767 RTC的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/19/stm32f767-uart-dma/">STM32F767 DMA的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/07/stm32f767-pwm/">STM32F767 PWM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/28/feedforward-cap/">优化前馈电容改善DCDC的瞬态响应(未完成)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/25/stm32f767-wwdg/">STM32F767 WWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/21/stm32f767-iwdg/">STM32F767 IWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/16/stm32f767-timer/">STM32F767 Timer中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/stm32f767-gpio-it/">STM32F767 GPIO中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/stm32f767-GPIO-UART/">STM32F767 GPIO与UART的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/stm32f767-delay/">STM32F767 delay函数的HAL库实现与优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/23/stm32f767-system/">STM32F767系统内核与时钟设置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/18/stm32f767newpro/">新建一个STM32F767工程(基于HAL库)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/17/stm32f767-start/">使用STM32CubeMX新建STM32F7工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/12/mlcc-noise/">电源应用中MLCC啸叫问题的分析与解决</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/04/pierce-oscillator/">Pierce振荡器的原理与设计方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/28/F28379D-new-pro-cpu1/">F28379D新建工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/23/python-pyinstaller/">PyInstaller基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/HDC1010-C2000/">使用F28069驱动温湿度传感器HDC1010</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/IEEEStd802-11/">IEEE Std 802.11a/g/n/ac</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/08/XDS100-VCP/">加载C2000 XDS100仿真器的虚拟串口(VCP)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/06/MarkdownSyntax/">Markdown基本语法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/21/BuckPowerStage/">Buck电路的功率部分设计</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/myserial/">使用C#构建一个串口程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/09/allegro-guide-2/">Allegro学习笔记-差分线与等长线</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/11/allegro-guide-1/">Allegro学习笔记-基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/04/cadence-allegro-package/">使用Ultra Librarian创建Cadence原理图与PCB封装</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/新建一个C2000工程/">新建一个C2000工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/安装CCS与controlSUITE/">安装CCS与controlSUITE</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2018 焦迪
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

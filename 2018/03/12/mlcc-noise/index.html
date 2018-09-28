@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="焦迪" />
+
+
+
+<meta name="description" content="&amp;emsp;本文分析电源应用中MLCC啸叫产生的机理与抑制手段。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="电源应用中MLCC啸叫问题的分析与解决">
+<meta property="og:url" content="http://jiaodi.tech/2018/03/12/mlcc-noise/index.html">
+<meta property="og:site_name" content="焦迪的博客">
+<meta property="og:description" content="&amp;emsp;本文分析电源应用中MLCC啸叫产生的机理与抑制手段。">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/mlcc_noise01.gif">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/mlcc_noise04.gif">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/mlcc_noise02.jpg">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/mlcc_noise03.jpg">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/mlcc_noise05.jpg">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/mlcc_noise06.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/Reward.jpg">
+<meta property="og:updated_time" content="2018-03-14T15:52:32.155Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="电源应用中MLCC啸叫问题的分析与解决">
+<meta name="twitter:description" content="&amp;emsp;本文分析电源应用中MLCC啸叫产生的机理与抑制手段。">
+<meta name="twitter:image" content="http://omcg8fk23.bkt.clouddn.com/mlcc_noise01.gif">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="焦迪的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="http://omcg8fk23.bkt.clouddn.com/Jay.jpg">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>电源应用中MLCC啸叫问题的分析与解决 | 焦迪的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+
+
+</head>
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">焦迪</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">Shape of my heart.</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/802-11/">802.11</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AD7616/">AD7616</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Allegro/">Allegro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Buck/">Buck</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C#</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C2000/">C2000</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CCS/">CCS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cadence/">Cadence</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DCDC/">DCDC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DMA/">DMA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSP/">DSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/F28379D/">F28379D</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FMC/">FMC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flash/">Flash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPIO/">GPIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HDC1010/">HDC1010</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I2C/">I2C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IWDG/">IWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keil/">Keil</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MAC/">MAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MLCC/">MLCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MPU/">MPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Noise/">Noise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCB/">PCB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHY/">PHY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PWM/">PWM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pierce/">Pierce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyInstaller/">PyInstaller</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QUADSPI/">QUADSPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RTC/">RTC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDRAM/">SDRAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32CubeMX/">STM32CubeMX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32F7/">STM32F7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sensor/">Sensor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Systick/">Systick</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Timer/">Timer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UART/">UART</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WWDG/">WWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XDS100/">XDS100</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/crystal/">crystal</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interrupt/">interrupt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oscillator/">oscillator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serial/">serial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/串口/">串口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前馈电容/">前馈电容</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态响应/">动态响应</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/封装/">封装</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/差分线/">差分线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/等长线/">等长线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高速电路/">高速电路</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://zhangxb.tech/">张晓斌</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://gaomf.cn/">高明飞</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://tongzai.tech/">桐仔</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">雨下整夜，此刻初晴.</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">焦迪</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">焦迪</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">Shape of my heart.</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-mlcc-noise" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/03/12/mlcc-noise/" class="article-date">
+      <time datetime="2018-03-12T13:56:56.000Z" itemprop="datePublished">2018-03-12</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      电源应用中MLCC啸叫问题的分析与解决
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Hardware/">Hardware</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MLCC/">MLCC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Noise/">Noise</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PCB/">PCB</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>&emsp;本文分析电源应用中MLCC啸叫产生的机理与抑制手段。</p>
+<a id="more"></a>
+<p>&emsp;本文根据以下文章整理综合：</p>
+<blockquote>
+<p><a href="https://www.murata.com/products/capacitor/mlcc/solution/naki" target="_blank" rel="external">啸叫对策事例 (动画)</a></p>
+<p><a href="https://e2e.ti.com/blogs_/b/powerhouse/archive/2016/08/09/how-to-reduce-acoustic-noise-of-mlccs-in-power-applications" target="_blank" rel="external">How to reduce acoustic noise of MLCCs in power applications</a></p>
+<p><a href="http://www.eenewsanalog.com/content/reducing-mlccs-piezoelectric-effects-and-audible-noise" target="_blank" rel="external">Reducing MLCCs’ piezoelectric effects and audible noise</a></p>
+</blockquote>
+<h2 id="MLCC啸叫现象"><a href="#MLCC啸叫现象" class="headerlink" title="MLCC啸叫现象"></a>MLCC啸叫现象</h2><p><img src="http://omcg8fk23.bkt.clouddn.com/mlcc_noise01.gif" alt=""></p>
+<p>&emsp;MLCC在电源应用中具有广泛的用途，其优点主要在于：</p>
+<ul>
+<li>高密度容值</li>
+<li>低寄生电阻(ESR)</li>
+<li>低寄生电感(ESL)</li>
+<li>高频阻抗低</li>
+<li>无极性，易于安装制造</li>
+<li>相比于钽电容与铝电解电容可靠性更高</li>
+<li>低成本</li>
+</ul>
+<p>&emsp;通常情况下，MLCC并不会产生噪声。但在某些特殊场合下，MLCC会引发啸叫现象。MLCC的形态如下图所示：</p>
+<p><img src="http://omcg8fk23.bkt.clouddn.com/mlcc_noise04.gif" alt=""></p>
+<p>&emsp;由于陶瓷材料的<code>压电效应</code>(piezoelectric effect)，当外加<code>交流电压</code>时其将进行收缩，如下图所示。</p>
+<p><img src="http://omcg8fk23.bkt.clouddn.com/mlcc_noise02.jpg" alt=""></p>
+<p>&emsp;当电容器收缩时，将牵引PCB震动，如下图所示。注意图中“电解的施加方向”标注错误，应为“电场的施加方向”。芯片以及电路板的振幅仅为1pm~1nm。当电路板的振动周期在<code>人耳可以听到的频率带</code>(20~20kHz)是，则声音可以被人耳识别。</p>
+<p><img src="http://omcg8fk23.bkt.clouddn.com/mlcc_noise03.jpg" alt=""></p>
+<h2 id="影响啸叫的因素"><a href="#影响啸叫的因素" class="headerlink" title="影响啸叫的因素"></a>影响啸叫的因素</h2><p>&emsp;影响啸叫的因素主要有以下几点，啸叫程度可以用声压级(SPL:Sound Pressure Level)衡量：</p>
+<ul>
+<li>交流电压的频率是否在可闻频率带(20~20kHz)</li>
+<li>交流电压的幅值：幅值增大则SPL增加</li>
+<li>直流偏置电压：直流偏置电压越大，则SPL增加</li>
+<li>电容的介电常数：介电常数越大则压电效应越强</li>
+<li>电容的层数：电容的层数越少，产生的形变小，则SPL降低</li>
+</ul>
+<p><img src="http://omcg8fk23.bkt.clouddn.com/mlcc_noise05.jpg" alt=""></p>
+<h2 id="抑制啸叫的手段"><a href="#抑制啸叫的手段" class="headerlink" title="抑制啸叫的手段"></a>抑制啸叫的手段</h2><h3 id="降低交流电压幅值"><a href="#降低交流电压幅值" class="headerlink" title="降低交流电压幅值"></a>降低交流电压幅值</h3><p>&emsp;降低纹波幅值可以通过增大电容值来实现。更重要的是，需要侧重降低可闻频率带的纹波幅值。可以测量纹波噪声的频率，针对该频带设置合理类型与容值的电容进行滤波。</p>
+<h3 id="使用耐压更高的电容"><a href="#使用耐压更高的电容" class="headerlink" title="使用耐压更高的电容"></a>使用耐压更高的电容</h3><p>&emsp;直流偏置电压越高SPL越大(本人猜想这与电容的容值-直流偏置电压特性有关，直流偏置电压增加，则容值降低，则纹波幅值增加，则SPL增加)。相对地，如果提高电容的耐压值，则可以降低啸叫水平。</p>
+<h3 id="优化PCB布局"><a href="#优化PCB布局" class="headerlink" title="优化PCB布局"></a>优化PCB布局</h3><p>&emsp;电容器牵引PCB引起噪声。增加PCB板的厚度有助于降低牵引影响，可以降低噪声；同时，如果<code>将电容器对称放置在PCB两侧</code>，则理想状态下牵引力抵消，则PCB不会发生形变。</p>
+<p><img src="http://omcg8fk23.bkt.clouddn.com/mlcc_noise06.png" alt=""></p>
+<h3 id="使用低噪声电容"><a href="#使用低噪声电容" class="headerlink" title="使用低噪声电容"></a>使用低噪声电容</h3><p>&emsp;目前村田等已经有低噪声产品推出，主要有两种降噪思路：</p>
+<ul>
+<li>使用独特的陶瓷材料抑制电容器的震动；</li>
+<li>使用支架等结构降低电容震动引起的应力。</li>
+</ul>
+<p><img src="http://omcg8fk23.bkt.clouddn.com/Reward.jpg" alt=""></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/03/12/mlcc-noise/">电源应用中MLCC啸叫问题的分析与解决</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">焦迪</a></p>
+        <p><span>发布时间:</span>2018-03-12, 21:56:56</p>
+        <p><span>最后更新:</span>2018-03-14, 23:52:32</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/03/12/mlcc-noise/" title="电源应用中MLCC啸叫问题的分析与解决">http://jiaodi.tech/2018/03/12/mlcc-noise/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://jiaodi.tech/2018/03/12/mlcc-noise/　　作者: 焦迪" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/03/17/stm32f767-start/">
+                    使用STM32CubeMX新建STM32F7工程
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/02/04/pierce-oscillator/">
+                    Pierce振荡器的原理与设计方法
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#MLCC啸叫现象"><span class="toc-number">1.</span> <span class="toc-text">MLCC啸叫现象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#影响啸叫的因素"><span class="toc-number">2.</span> <span class="toc-text">影响啸叫的因素</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抑制啸叫的手段"><span class="toc-number">3.</span> <span class="toc-text">抑制啸叫的手段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#降低交流电压幅值"><span class="toc-number">3.1.</span> <span class="toc-text">降低交流电压幅值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用耐压更高的电容"><span class="toc-number">3.2.</span> <span class="toc-text">使用耐压更高的电容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#优化PCB布局"><span class="toc-number">3.3.</span> <span class="toc-text">优化PCB布局</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用低噪声电容"><span class="toc-number">3.4.</span> <span class="toc-text">使用低噪声电容</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/03/12/mlcc-noise/" data-title="电源应用中MLCC啸叫问题的分析与解决" data-url="http://jiaodi.tech/2018/03/12/mlcc-noise/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"null"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/03/17/stm32f767-start/" title="上一篇: 使用STM32CubeMX新建STM32F7工程">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/02/04/pierce-oscillator/" title="下一篇: Pierce振荡器的原理与设计方法">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/08/11/stm32f767-fmc-ad7616/">利用SMT32F767驱动AD7616</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/stm32f767-mpu/">STM32F767 MPU的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/16/stm32f767-sdram/">STM32F767 FMC-SDRAM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/30/stm32f767-qspi/">STM32F767 QUADSPI的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/27/stm32f767-flash/">STM32F767 Flash的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/21/stm32f767-rtc/">STM32F767 RTC的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/19/stm32f767-uart-dma/">STM32F767 DMA的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/07/stm32f767-pwm/">STM32F767 PWM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/28/feedforward-cap/">优化前馈电容改善DCDC的瞬态响应(未完成)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/25/stm32f767-wwdg/">STM32F767 WWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/21/stm32f767-iwdg/">STM32F767 IWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/16/stm32f767-timer/">STM32F767 Timer中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/stm32f767-gpio-it/">STM32F767 GPIO中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/stm32f767-GPIO-UART/">STM32F767 GPIO与UART的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/stm32f767-delay/">STM32F767 delay函数的HAL库实现与优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/23/stm32f767-system/">STM32F767系统内核与时钟设置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/18/stm32f767newpro/">新建一个STM32F767工程(基于HAL库)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/17/stm32f767-start/">使用STM32CubeMX新建STM32F7工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/12/mlcc-noise/">电源应用中MLCC啸叫问题的分析与解决</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/04/pierce-oscillator/">Pierce振荡器的原理与设计方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/28/F28379D-new-pro-cpu1/">F28379D新建工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/23/python-pyinstaller/">PyInstaller基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/HDC1010-C2000/">使用F28069驱动温湿度传感器HDC1010</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/IEEEStd802-11/">IEEE Std 802.11a/g/n/ac</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/08/XDS100-VCP/">加载C2000 XDS100仿真器的虚拟串口(VCP)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/06/MarkdownSyntax/">Markdown基本语法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/21/BuckPowerStage/">Buck电路的功率部分设计</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/myserial/">使用C#构建一个串口程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/09/allegro-guide-2/">Allegro学习笔记-差分线与等长线</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/11/allegro-guide-1/">Allegro学习笔记-基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/04/cadence-allegro-package/">使用Ultra Librarian创建Cadence原理图与PCB封装</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/新建一个C2000工程/">新建一个C2000工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/安装CCS与controlSUITE/">安装CCS与controlSUITE</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2018 焦迪
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

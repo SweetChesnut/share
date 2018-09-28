@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="焦迪" />
+
+
+
+<meta name="description" content="&amp;emsp;本文介绍STM32F767 GPIO与UART的基本用法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STM32F767 GPIO与UART的基本用法">
+<meta property="og:url" content="http://jiaodi.tech/2018/04/05/stm32f767-GPIO-UART/index.html">
+<meta property="og:site_name" content="焦迪的博客">
+<meta property="og:description" content="&amp;emsp;本文介绍STM32F767 GPIO与UART的基本用法。">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/Reward.jpg">
+<meta property="og:updated_time" content="2018-04-15T15:12:33.666Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="STM32F767 GPIO与UART的基本用法">
+<meta name="twitter:description" content="&amp;emsp;本文介绍STM32F767 GPIO与UART的基本用法。">
+<meta name="twitter:image" content="http://omcg8fk23.bkt.clouddn.com/Reward.jpg">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="焦迪的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="http://omcg8fk23.bkt.clouddn.com/Jay.jpg">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>STM32F767 GPIO与UART的基本用法 | 焦迪的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+
+
+</head>
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">焦迪</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">Shape of my heart.</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/802-11/">802.11</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AD7616/">AD7616</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Allegro/">Allegro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Buck/">Buck</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C#</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C2000/">C2000</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CCS/">CCS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cadence/">Cadence</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DCDC/">DCDC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DMA/">DMA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSP/">DSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/F28379D/">F28379D</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FMC/">FMC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flash/">Flash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPIO/">GPIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HDC1010/">HDC1010</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I2C/">I2C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IWDG/">IWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keil/">Keil</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MAC/">MAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MLCC/">MLCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MPU/">MPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Noise/">Noise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCB/">PCB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHY/">PHY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PWM/">PWM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pierce/">Pierce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyInstaller/">PyInstaller</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QUADSPI/">QUADSPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RTC/">RTC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDRAM/">SDRAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32CubeMX/">STM32CubeMX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32F7/">STM32F7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sensor/">Sensor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Systick/">Systick</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Timer/">Timer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UART/">UART</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WWDG/">WWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XDS100/">XDS100</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/crystal/">crystal</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interrupt/">interrupt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oscillator/">oscillator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serial/">serial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/串口/">串口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前馈电容/">前馈电容</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态响应/">动态响应</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/封装/">封装</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/差分线/">差分线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/等长线/">等长线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高速电路/">高速电路</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://zhangxb.tech/">张晓斌</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://gaomf.cn/">高明飞</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://tongzai.tech/">桐仔</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">雨下整夜，此刻初晴.</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">焦迪</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">焦迪</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">Shape of my heart.</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-stm32f767-GPIO-UART" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/04/05/stm32f767-GPIO-UART/" class="article-date">
+      <time datetime="2018-04-05T10:05:01.000Z" itemprop="datePublished">2018-04-05</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      STM32F767 GPIO与UART的基本用法
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/嵌入式/">嵌入式</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPIO/">GPIO</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/STM32F7/">STM32F7</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UART/">UART</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>&emsp;本文介绍STM32F767 GPIO与UART的基本用法。</p>
+<a id="more"></a>
+<h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><h3 id="硬件环境"><a href="#硬件环境" class="headerlink" title="硬件环境"></a>硬件环境</h3><ul>
+<li>电脑：Windows 10 Home x64</li>
+<li>Apollo STM32F767开发板(ST-LINK V2仿真器)</li>
+</ul>
+<h3 id="软件环境"><a href="#软件环境" class="headerlink" title="软件环境"></a>软件环境</h3><ul>
+<li>Keil Version 5.24.1 (Pack Installer：Keil.STM32F7xx_DFP.2.9.0.pack)</li>
+<li>STM32CubeMX Version 4.25.0(Packages Manager：STM32CubeF7)</li>
+</ul>
+<h2 id="GPIO基本用法"><a href="#GPIO基本用法" class="headerlink" title="GPIO基本用法"></a>GPIO基本用法</h2><p>&emsp;使用GPIO的基本流程为：使能GPIO对应端口时钟、配置IO参数、控制IO输出或者读取IO状态。</p>
+<h3 id="使能GPIO端口时钟"><a href="#使能GPIO端口时钟" class="headerlink" title="使能GPIO端口时钟"></a>使能GPIO端口时钟</h3><p>&emsp;任何需要使用IO端口的<code>外设使用前都必须使能对应地IO端口时钟</code>。对于不考虑功耗的系统，可以直接<code>将所有的IO端口时钟全部打开</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">RCC_CLK_Enable</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="comment">/* GPIO Ports Clock Enable */</span></div><div class="line">	__HAL_RCC_GPIOA_CLK_ENABLE();</div><div class="line">	__HAL_RCC_GPIOB_CLK_ENABLE();</div><div class="line">	__HAL_RCC_GPIOC_CLK_ENABLE();</div><div class="line">	__HAL_RCC_GPIOD_CLK_ENABLE();</div><div class="line">	__HAL_RCC_GPIOE_CLK_ENABLE();</div><div class="line">	__HAL_RCC_GPIOF_CLK_ENABLE();</div><div class="line">	__HAL_RCC_GPIOG_CLK_ENABLE();</div><div class="line">	__HAL_RCC_GPIOH_CLK_ENABLE();</div><div class="line">	__HAL_RCC_GPIOI_CLK_ENABLE();</div><div class="line">	</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="设置IO参数"><a href="#设置IO参数" class="headerlink" title="设置IO参数"></a>设置IO参数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">MX_GPIO_Init</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">  GPIO_InitTypeDef GPIO_InitStruct;</div><div class="line"></div><div class="line">  <span class="comment">/*Configure GPIO pin Output Level */</span></div><div class="line">  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1, GPIO_PIN_RESET);</div><div class="line"></div><div class="line">  <span class="comment">/*Configure GPIO pins : PB0 PB1 */</span></div><div class="line">  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;</div><div class="line">  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;</div><div class="line">  GPIO_InitStruct.Pull = GPIO_NOPULL;</div><div class="line">  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;</div><div class="line">  HAL_GPIO_Init(GPIOB, &amp;GPIO_InitStruct);</div><div class="line">	</div><div class="line">  <span class="comment">/*Configure GPIO pin : PH3 */</span></div><div class="line">  GPIO_InitStruct.Pin = GPIO_PIN_3;</div><div class="line">  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;</div><div class="line">  GPIO_InitStruct.Pull = GPIO_PULLUP;</div><div class="line">  HAL_GPIO_Init(GPIOH, &amp;GPIO_InitStruct);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;IO的初始化参数通过<code>GPIO_InitStruct</code>结构体设置，对于<code>输入IO</code>，需要的设置如下：</p>
+<ul>
+<li>PIN脚号；</li>
+<li>IO模式：可以选择push pull或者open drain；</li>
+<li>IO上下拉设置：可以选择上拉、下拉或者不进行上拉下拉；</li>
+<li>IO速度：可以设置IO的翻转速度，具体可以参考器件的手册；</li>
+<li>调用HAL_GPIO_Init()函数完成IO初始化。</li>
+</ul>
+<p>&emsp;对于<code>输入IO</code>，与输出IO不同的设置如下：</p>
+<ul>
+<li>IO模式：选择input模式；</li>
+<li>IO速度：无需设置。</li>
+</ul>
+<h3 id="输出IO的控制"><a href="#输出IO的控制" class="headerlink" title="输出IO的控制"></a>输出IO的控制</h3><p>&emsp;IO的输出通过<code>HAL_GPIO_WritePin()</code>/<code>HAL_GPIO_TogglePin()</code>实现，后文举例说明。</p>
+<h3 id="输入IO的读取"><a href="#输入IO的读取" class="headerlink" title="输入IO的读取"></a>输入IO的读取</h3><p>&emsp;IO的输入数据通过<code>HAL_GPIO_ReadPin()</code>实现，后文举例说明。</p>
+<h3 id="GPIO使用示例"><a href="#GPIO使用示例" class="headerlink" title="GPIO使用示例"></a>GPIO使用示例</h3><p>&emsp;示例代码如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (HAL_GPIO_ReadPin(GPIOH, GPIO_PIN_3) == GPIO_PIN_RESET)</div><div class="line">&#123;</div><div class="line">	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);</div><div class="line">	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);</div><div class="line">	<span class="keyword">while</span> (HAL_GPIO_ReadPin(GPIOH, GPIO_PIN_3) == GPIO_PIN_RESET);</div><div class="line">&#125;</div><div class="line"><span class="keyword">else</span></div><div class="line">&#123;</div><div class="line">    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;该代码的功能是检测到port H PIN3为低电平后，翻转port B PIN1，同时点亮port B PIN1。</p>
+<h3 id="OLED的使用"><a href="#OLED的使用" class="headerlink" title="OLED的使用"></a>OLED的使用</h3><p>&emsp;本文使用的OLED显示屏使用4个GPIO即可完成驱动。只需要移植底层IO代码，上层应用可以直接使用，底层代码实现如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">LCD_Hardware_Init</span><span class="params">()</span></span>&#123;</div><div class="line">  <span class="comment">/*Configure GPIO pins : PC6 PC7 PC8 PC9 */</span></div><div class="line">	__HAL_RCC_GPIOE_CLK_ENABLE();</div><div class="line">	GPIO_InitTypeDef GPIO_InitStruct;</div><div class="line">	GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5;</div><div class="line">	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;</div><div class="line">	GPIO_InitStruct.Pull = GPIO_NOPULL;</div><div class="line">	GPIO_InitStruct.Speed = GPIO_SPEED_LOW;</div><div class="line">	HAL_GPIO_Init(GPIOE, &amp;GPIO_InitStruct);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> oledSCL_1  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> oledSCL_0  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_RESET)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> oledSDA_1  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> oledSDA_0  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_RESET)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> oledRST_1  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_SET)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> oledRST_0  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_RESET)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> oledDC_1   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, GPIO_PIN_SET)</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> oledDC_0   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, GPIO_PIN_RESET)</span></div></pre></td></tr></table></figure>
+<p>&emsp;OLED显示屏可以进行字符串、数字以及简单图标的展示，便于系统调试。</p>
+<h2 id="UART基本用法"><a href="#UART基本用法" class="headerlink" title="UART基本用法"></a>UART基本用法</h2><p>&emsp;使用UART的基本流程为：初始化<code>huart1</code>结构体、调用<code>HAL_UART_Init()</code>函数完成初始化。</p>
+<h3 id="huart1结构体参数初始化"><a href="#huart1结构体参数初始化" class="headerlink" title="huart1结构体参数初始化"></a>huart1结构体参数初始化</h3><p>&emsp;<code>huart1</code>结构体主要包含了串口参数，例如波特率、数据长度、停止位、奇偶校验位等。之后调用<code>HAL_UART_Init()</code>函数完成初始化。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">UART_HandleTypeDef huart1;</div><div class="line"></div><div class="line"><span class="comment">/* USART1 init function */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">MX_USART1_UART_Init</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">  huart1.Instance = USART1;</div><div class="line">  huart1.Init.BaudRate = <span class="number">115200</span>;</div><div class="line">  huart1.Init.WordLength = UART_WORDLENGTH_8B;</div><div class="line">  huart1.Init.StopBits = UART_STOPBITS_1;</div><div class="line">  huart1.Init.Parity = UART_PARITY_NONE;</div><div class="line">  huart1.Init.Mode = UART_MODE_TX_RX;</div><div class="line">  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;</div><div class="line">  huart1.Init.OverSampling = UART_OVERSAMPLING_16;</div><div class="line">  huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;</div><div class="line">  huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;</div><div class="line">  <span class="keyword">if</span> (HAL_UART_Init(&amp;huart1) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="HAL-UART-Init-的功能"><a href="#HAL-UART-Init-的功能" class="headerlink" title="HAL_UART_Init()的功能"></a>HAL_UART_Init()的功能</h3><p>&emsp;<code>HAL_UART_Init()</code>函数的内容如下所示。除参数合理性检测之外，将调用<code>HAL_UART_MspInit()</code>完成硬件IO的初始化、调用<code>UART_SetConfig()</code>完成UART参数的初始化。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief Initializes the UART mode according to the specified</div><div class="line">  *         parameters in the UART_InitTypeDef and creates the associated handle .</div><div class="line">  * @param huart uart handle</div><div class="line">  * @retval HAL status</div><div class="line">  */</div><div class="line"><span class="function">HAL_StatusTypeDef <span class="title">HAL_UART_Init</span><span class="params">(UART_HandleTypeDef *huart)</span></span></div><div class="line">&#123;</div><div class="line">  <span class="comment">/* Check the UART handle allocation */</span></div><div class="line">  <span class="keyword">if</span>(huart == <span class="literal">NULL</span>)</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">return</span> HAL_ERROR;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">if</span>(huart-&gt;Init.HwFlowCtl != UART_HWCONTROL_NONE)</div><div class="line">  &#123;</div><div class="line">    <span class="comment">/* Check the parameters */</span></div><div class="line">    assert_param(IS_UART_HWFLOW_INSTANCE(huart-&gt;Instance));</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span></div><div class="line">  &#123;</div><div class="line">    <span class="comment">/* Check the parameters */</span></div><div class="line">    assert_param(IS_UART_INSTANCE(huart-&gt;Instance));</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">if</span>(huart-&gt;gState == HAL_UART_STATE_RESET)</div><div class="line">  &#123;</div><div class="line">    <span class="comment">/* Allocate lock resource and initialize it */</span></div><div class="line">    huart-&gt;Lock = HAL_UNLOCKED;</div><div class="line"></div><div class="line">    <span class="comment">/* Init the low level hardware : GPIO, CLOCK */</span></div><div class="line">    HAL_UART_MspInit(huart);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  huart-&gt;gState = HAL_UART_STATE_BUSY;</div><div class="line"></div><div class="line">  <span class="comment">/* Disable the Peripheral */</span></div><div class="line">  __HAL_UART_DISABLE(huart);</div><div class="line"></div><div class="line">  <span class="comment">/* Set the UART Communication parameters */</span></div><div class="line">  <span class="keyword">if</span> (UART_SetConfig(huart) == HAL_ERROR)</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">return</span> HAL_ERROR;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (huart-&gt;AdvancedInit.AdvFeatureInit != UART_ADVFEATURE_NO_INIT)</div><div class="line">  &#123;</div><div class="line">    UART_AdvFeatureConfig(huart);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">/* In asynchronous mode, the following bits must be kept cleared:</span></div><div class="line">  - LINEN and CLKEN bits in the USART_CR2 register,</div><div class="line">  - SCEN, HDSEL and IREN  bits in the USART_CR3 register.*/</div><div class="line">  CLEAR_BIT(huart-&gt;Instance-&gt;CR2, (USART_CR2_LINEN | USART_CR2_CLKEN));</div><div class="line">  CLEAR_BIT(huart-&gt;Instance-&gt;CR3, (USART_CR3_SCEN | USART_CR3_HDSEL | USART_CR3_IREN));</div><div class="line"></div><div class="line">  <span class="comment">/* Enable the Peripheral */</span></div><div class="line">  __HAL_UART_ENABLE(huart);</div><div class="line"></div><div class="line">  <span class="comment">/* TEACK and/or REACK to check before moving huart-&gt;gState and huart-&gt;RxState to Ready */</span></div><div class="line">  <span class="keyword">return</span> (UART_CheckIdleState(huart));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">HAL_UART_MspInit</span><span class="params">(UART_HandleTypeDef* uartHandle)</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">  GPIO_InitTypeDef GPIO_InitStruct;</div><div class="line">  <span class="keyword">if</span>(uartHandle-&gt;Instance==USART1)</div><div class="line">  &#123;</div><div class="line">  <span class="comment">/* USER CODE BEGIN USART1_MspInit 0 */</span></div><div class="line"></div><div class="line">  <span class="comment">/* USER CODE END USART1_MspInit 0 */</span></div><div class="line">    <span class="comment">/* USART1 clock enable */</span></div><div class="line">    __HAL_RCC_USART1_CLK_ENABLE();</div><div class="line">  </div><div class="line">    <span class="comment">/**USART1 GPIO Configuration    </span></div><div class="line">    PA9     ------&gt; USART1_TX</div><div class="line">    PA10     ------&gt; USART1_RX </div><div class="line">    */</div><div class="line">    GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_10;</div><div class="line">    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;</div><div class="line">    GPIO_InitStruct.Pull = GPIO_NOPULL;</div><div class="line">    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;</div><div class="line">    GPIO_InitStruct.Alternate = GPIO_AF7_USART1;</div><div class="line">    HAL_GPIO_Init(GPIOA, &amp;GPIO_InitStruct);</div><div class="line"></div><div class="line">  <span class="comment">/* USER CODE BEGIN USART1_MspInit 1 */</span></div><div class="line"></div><div class="line">  <span class="comment">/* USER CODE END USART1_MspInit 1 */</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="UART的发送与接收"><a href="#UART的发送与接收" class="headerlink" title="UART的发送与接收"></a>UART的发送与接收</h3><p>&emsp;UART的发送与接收通过<code>HAL_UART_Transmit()</code>/<code>HAL_UART_Receive()</code>实现，示例如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (__HAL_UART_GET_FLAG(&amp;huart1,UART_FLAG_RXNE)==SET)</div><div class="line">&#123;</div><div class="line">    HAL_UART_Receive(&amp;huart1, usart1_rx, <span class="number">1</span>, <span class="number">1000</span>);</div><div class="line">	HAL_UART_Transmit(&amp;huart1,(uint8 *)<span class="string">"\nYou send: "</span>,<span class="number">11</span>,<span class="number">1000</span>);</div><div class="line">	HAL_UART_Transmit(&amp;huart1,usart1_rx, <span class="number">1</span>,<span class="number">1000</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;当检测到串口RXNE标志位为1时，表示此时串口接收到信息，即调用<code>HAL_UART_Receive()</code>函数进行读取。读取后通过<code>HAL_UART_Transmit()</code>发送提示信息与接收到的信息。事实上可以直接调用<code>HAL_UART_Receive()</code>函数轮询串口，当返回值为<code>HAL_TIMEOUT</code>时即表示没有接收到信息。</p>
+<h3 id="UART发送函数的简化"><a href="#UART发送函数的简化" class="headerlink" title="UART发送函数的简化"></a>UART发送函数的简化</h3><p>&emsp;读取<code>HAL_UART_Transmit()</code>的实现流程，其相对复杂。对于通常用到的场景来说，可以进行简化，即采用寄存器方式操作。具体实现如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Transmit a character from the SCI</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">scia_xmit</span><span class="params">(<span class="keyword">int</span> ch)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">while</span> ((USART1-&gt;ISR &amp; USART_ISR_TC_Msk) == FALSE);</div><div class="line">    USART1-&gt;TDR = (uint8)(ch &amp; <span class="number">0xFF</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;该函数实现了单个字符的发送，注意对字符<code>与0xff的&amp;操作</code>表示发送的<code>数据位为8位</code>。</p>
+<p>&emsp;基于该函数还可以封装诸如发送字符串、数字、不同进制数的相关函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"uart.h"</span></span></div><div class="line"></div><div class="line"><span class="comment">// Test 1,SCIA  DLB, 8-bit word, baud rate 0x000F, default, 1 STOP bit, no parity</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// Transmit a character from the SCI</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">scia_xmit</span><span class="params">(<span class="keyword">int</span> ch)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">while</span> ((USART1-&gt;ISR &amp; USART_ISR_TC_Msk) == FALSE);</div><div class="line">    USART1-&gt;TDR = (uint8)(ch &amp; <span class="number">0xFF</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">scia_msg</span><span class="params">(<span class="keyword">char</span> * msg)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> i;</div><div class="line">    i = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span>(msg[i] != <span class="string">'\0'</span>)</div><div class="line">    &#123;</div><div class="line">        scia_xmit(msg[i]);</div><div class="line">        i++;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">uart_printf</span><span class="params">(<span class="keyword">char</span> * msg)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> i;</div><div class="line">    i = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span>(msg[i] != <span class="string">'\0'</span>)</div><div class="line">    &#123;</div><div class="line">        scia_xmit(msg[i]);</div><div class="line">        i++;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">uart_print_data</span><span class="params">(int32 data)</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line">    <span class="keyword">char</span> temp[<span class="number">7</span>];</div><div class="line">    <span class="keyword">if</span> (data &lt; <span class="number">0</span>)</div><div class="line">    &#123;</div><div class="line">    	data = - data;</div><div class="line">    	temp[<span class="number">0</span>] = <span class="string">'-'</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> temp[<span class="number">0</span>] = <span class="string">' '</span>;</div><div class="line"></div><div class="line">    temp[<span class="number">1</span>] = data / <span class="number">10000</span> + <span class="string">'0'</span>;</div><div class="line">    temp[<span class="number">2</span>] = (data % <span class="number">10000</span>) /<span class="number">1000</span> + <span class="string">'0'</span>;</div><div class="line">    temp[<span class="number">3</span>] = (data % <span class="number">1000</span> ) /<span class="number">100</span>  + <span class="string">'0'</span>;</div><div class="line">    temp[<span class="number">4</span>] = (data % <span class="number">100</span>  ) /<span class="number">10</span>   + <span class="string">'0'</span>;</div><div class="line">    temp[<span class="number">5</span>] = (data % <span class="number">10</span>   ) /<span class="number">1</span>    + <span class="string">'0'</span>;</div><div class="line">    temp[<span class="number">6</span>] = <span class="string">'\0'</span>;</div><div class="line"></div><div class="line">    <span class="keyword">while</span>(temp[i] != <span class="string">'\0'</span>)</div><div class="line">    &#123;</div><div class="line">        scia_xmit(temp[i]);</div><div class="line">        i++;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">uart_print_info</span><span class="params">(<span class="keyword">char</span> * msg, int32 data)</span></span></div><div class="line">&#123;</div><div class="line">	uart_printf(msg);</div><div class="line">	uart_printf(<span class="string">": "</span>);</div><div class="line">	uart_print_data(data);</div><div class="line">	uart_printf(<span class="string">"\n"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">printNumber</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">long</span> n, uint8 base)</span> </span>&#123;</div><div class="line">  <span class="keyword">char</span> buf[<span class="number">8</span> * <span class="keyword">sizeof</span>(<span class="keyword">long</span>) + <span class="number">1</span>]; <span class="comment">// Assumes 8-bit chars plus zero byte.</span></div><div class="line">  <span class="keyword">char</span> *str = &amp;buf[<span class="keyword">sizeof</span>(buf) - <span class="number">1</span>];</div><div class="line"></div><div class="line">  *str = <span class="string">'\0'</span>;</div><div class="line"></div><div class="line">  <span class="comment">// prevent crash if called with base == 1</span></div><div class="line">  <span class="keyword">if</span> (base &lt; <span class="number">2</span>) base = <span class="number">10</span>;</div><div class="line"></div><div class="line">  <span class="keyword">do</span> &#123;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> m = n;</div><div class="line">    n /= base;</div><div class="line">    <span class="keyword">char</span> c = m - base * n;</div><div class="line">    *--str = c &lt; <span class="number">10</span> ? c + <span class="string">'0'</span> : c + <span class="string">'A'</span> - <span class="number">10</span>;</div><div class="line">  &#125; <span class="keyword">while</span>(n);</div><div class="line"></div><div class="line">  uart_printf(str);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Receive a character from the SCI</span></div><div class="line"><span class="function">uint8 <span class="title">scia_recv</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">	uint8 ch;</div><div class="line">    <span class="keyword">while</span> ((USART1-&gt;ISR &amp; UART_FLAG_RXNE) == FALSE);</div><div class="line">	ch = USART1-&gt;RDR &amp; <span class="number">0xFF</span>;</div><div class="line">	<span class="keyword">return</span> ch;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="UART接收函数的简化"><a href="#UART接收函数的简化" class="headerlink" title="UART接收函数的简化"></a>UART接收函数的简化</h3><p>&emsp;同理，<code>HAL_UART_Receive()</code>函数的实现也相对复杂，这里进行一个简单简化。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Receive a character from the SCI</span></div><div class="line"><span class="function">uint8 <span class="title">scia_recv</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">	uint8 ch;</div><div class="line">    <span class="keyword">while</span> ((USART1-&gt;ISR &amp; UART_FLAG_RXNE) == FALSE);</div><div class="line">	ch = USART1-&gt;RDR &amp; <span class="number">0xFF</span>;</div><div class="line">	<span class="keyword">return</span> ch;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;该函数实现了阻塞等待方式读取一个接收字符。</p>
+<h3 id="简化的UART发送接收"><a href="#简化的UART发送接收" class="headerlink" title="简化的UART发送接收"></a>简化的UART发送接收</h3><p>&emsp;示例代码如下，其实现的功能与基于HAL的发送接收函数一致，但是得到了明显简化。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> ((USART1-&gt;ISR &amp; USART_ISR_RXNE_Msk) != FALSE)</div><div class="line">&#123;</div><div class="line">    usart1_rx[<span class="number">0</span>] = USART1-&gt;RDR &amp; <span class="number">0xFF</span>;</div><div class="line">	uart_printf(<span class="string">"\nYou send: "</span>);</div><div class="line">	scia_xmit(usart1_rx[<span class="number">0</span>]);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="http://omcg8fk23.bkt.clouddn.com/Reward.jpg" alt=""></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/04/05/stm32f767-GPIO-UART/">STM32F767 GPIO与UART的基本用法</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">焦迪</a></p>
+        <p><span>发布时间:</span>2018-04-05, 18:05:01</p>
+        <p><span>最后更新:</span>2018-04-15, 23:12:33</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/04/05/stm32f767-GPIO-UART/" title="STM32F767 GPIO与UART的基本用法">http://jiaodi.tech/2018/04/05/stm32f767-GPIO-UART/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://jiaodi.tech/2018/04/05/stm32f767-GPIO-UART/　　作者: 焦迪" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/04/08/stm32f767-gpio-it/">
+                    STM32F767 GPIO中断的基本用法
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/03/29/stm32f767-delay/">
+                    STM32F767 delay函数的HAL库实现与优化
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开发环境"><span class="toc-number">1.</span> <span class="toc-text">开发环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件环境"><span class="toc-number">1.1.</span> <span class="toc-text">硬件环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#软件环境"><span class="toc-number">1.2.</span> <span class="toc-text">软件环境</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GPIO基本用法"><span class="toc-number">2.</span> <span class="toc-text">GPIO基本用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使能GPIO端口时钟"><span class="toc-number">2.1.</span> <span class="toc-text">使能GPIO端口时钟</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置IO参数"><span class="toc-number">2.2.</span> <span class="toc-text">设置IO参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#输出IO的控制"><span class="toc-number">2.3.</span> <span class="toc-text">输出IO的控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#输入IO的读取"><span class="toc-number">2.4.</span> <span class="toc-text">输入IO的读取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GPIO使用示例"><span class="toc-number">2.5.</span> <span class="toc-text">GPIO使用示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OLED的使用"><span class="toc-number">2.6.</span> <span class="toc-text">OLED的使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UART基本用法"><span class="toc-number">3.</span> <span class="toc-text">UART基本用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#huart1结构体参数初始化"><span class="toc-number">3.1.</span> <span class="toc-text">huart1结构体参数初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HAL-UART-Init-的功能"><span class="toc-number">3.2.</span> <span class="toc-text">HAL_UART_Init()的功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UART的发送与接收"><span class="toc-number">3.3.</span> <span class="toc-text">UART的发送与接收</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UART发送函数的简化"><span class="toc-number">3.4.</span> <span class="toc-text">UART发送函数的简化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UART接收函数的简化"><span class="toc-number">3.5.</span> <span class="toc-text">UART接收函数的简化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#简化的UART发送接收"><span class="toc-number">3.6.</span> <span class="toc-text">简化的UART发送接收</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/04/05/stm32f767-GPIO-UART/" data-title="STM32F767 GPIO与UART的基本用法" data-url="http://jiaodi.tech/2018/04/05/stm32f767-GPIO-UART/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"null"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/04/08/stm32f767-gpio-it/" title="上一篇: STM32F767 GPIO中断的基本用法">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/03/29/stm32f767-delay/" title="下一篇: STM32F767 delay函数的HAL库实现与优化">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/08/11/stm32f767-fmc-ad7616/">利用SMT32F767驱动AD7616</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/stm32f767-mpu/">STM32F767 MPU的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/16/stm32f767-sdram/">STM32F767 FMC-SDRAM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/30/stm32f767-qspi/">STM32F767 QUADSPI的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/27/stm32f767-flash/">STM32F767 Flash的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/21/stm32f767-rtc/">STM32F767 RTC的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/19/stm32f767-uart-dma/">STM32F767 DMA的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/07/stm32f767-pwm/">STM32F767 PWM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/28/feedforward-cap/">优化前馈电容改善DCDC的瞬态响应(未完成)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/25/stm32f767-wwdg/">STM32F767 WWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/21/stm32f767-iwdg/">STM32F767 IWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/16/stm32f767-timer/">STM32F767 Timer中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/stm32f767-gpio-it/">STM32F767 GPIO中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/stm32f767-GPIO-UART/">STM32F767 GPIO与UART的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/stm32f767-delay/">STM32F767 delay函数的HAL库实现与优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/23/stm32f767-system/">STM32F767系统内核与时钟设置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/18/stm32f767newpro/">新建一个STM32F767工程(基于HAL库)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/17/stm32f767-start/">使用STM32CubeMX新建STM32F7工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/12/mlcc-noise/">电源应用中MLCC啸叫问题的分析与解决</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/04/pierce-oscillator/">Pierce振荡器的原理与设计方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/28/F28379D-new-pro-cpu1/">F28379D新建工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/23/python-pyinstaller/">PyInstaller基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/HDC1010-C2000/">使用F28069驱动温湿度传感器HDC1010</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/IEEEStd802-11/">IEEE Std 802.11a/g/n/ac</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/08/XDS100-VCP/">加载C2000 XDS100仿真器的虚拟串口(VCP)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/06/MarkdownSyntax/">Markdown基本语法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/21/BuckPowerStage/">Buck电路的功率部分设计</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/myserial/">使用C#构建一个串口程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/09/allegro-guide-2/">Allegro学习笔记-差分线与等长线</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/11/allegro-guide-1/">Allegro学习笔记-基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/04/cadence-allegro-package/">使用Ultra Librarian创建Cadence原理图与PCB封装</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/新建一个C2000工程/">新建一个C2000工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/安装CCS与controlSUITE/">安装CCS与controlSUITE</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2018 焦迪
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

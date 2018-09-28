@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="焦迪" />
+
+
+
+<meta name="description" content="&amp;emsp;TMS320F28379D是德州仪器公司C2000系列中双核系列高性能微处理器。本文简述如何为CPU1与CPU2分别新建一个工程。随着学习的深入，本文将不断更新优化。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="F28379D新建工程">
+<meta property="og:url" content="http://jiaodi.tech/2018/01/28/F28379D-new-pro-cpu1/index.html">
+<meta property="og:site_name" content="焦迪的博客">
+<meta property="og:description" content="&amp;emsp;TMS320F28379D是德州仪器公司C2000系列中双核系列高性能微处理器。本文简述如何为CPU1与CPU2分别新建一个工程。随着学习的深入，本文将不断更新优化。">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/F28379D_NewPro01.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/F28379D_NewPro02.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/F28379D_NewPro03.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/Reward.jpg">
+<meta property="og:updated_time" content="2018-01-28T13:34:45.693Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="F28379D新建工程">
+<meta name="twitter:description" content="&amp;emsp;TMS320F28379D是德州仪器公司C2000系列中双核系列高性能微处理器。本文简述如何为CPU1与CPU2分别新建一个工程。随着学习的深入，本文将不断更新优化。">
+<meta name="twitter:image" content="http://omcg8fk23.bkt.clouddn.com/F28379D_NewPro01.png">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="焦迪的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="http://omcg8fk23.bkt.clouddn.com/Jay.jpg">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>F28379D新建工程 | 焦迪的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+
+
+</head>
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">焦迪</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">Shape of my heart.</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/802-11/">802.11</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AD7616/">AD7616</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Allegro/">Allegro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Buck/">Buck</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C#</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C2000/">C2000</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CCS/">CCS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cadence/">Cadence</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DCDC/">DCDC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DMA/">DMA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSP/">DSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/F28379D/">F28379D</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FMC/">FMC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flash/">Flash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPIO/">GPIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HDC1010/">HDC1010</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I2C/">I2C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IWDG/">IWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keil/">Keil</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MAC/">MAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MLCC/">MLCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MPU/">MPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Noise/">Noise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCB/">PCB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHY/">PHY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PWM/">PWM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pierce/">Pierce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyInstaller/">PyInstaller</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QUADSPI/">QUADSPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RTC/">RTC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDRAM/">SDRAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32CubeMX/">STM32CubeMX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32F7/">STM32F7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sensor/">Sensor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Systick/">Systick</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Timer/">Timer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UART/">UART</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WWDG/">WWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XDS100/">XDS100</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/crystal/">crystal</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interrupt/">interrupt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oscillator/">oscillator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serial/">serial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/串口/">串口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前馈电容/">前馈电容</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态响应/">动态响应</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/封装/">封装</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/差分线/">差分线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/等长线/">等长线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高速电路/">高速电路</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://zhangxb.tech/">张晓斌</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://gaomf.cn/">高明飞</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://tongzai.tech/">桐仔</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">雨下整夜，此刻初晴.</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">焦迪</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">焦迪</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">Shape of my heart.</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-F28379D-new-pro-cpu1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/01/28/F28379D-new-pro-cpu1/" class="article-date">
+      <time datetime="2018-01-28T08:17:50.000Z" itemprop="datePublished">2018-01-28</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      F28379D新建工程
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/嵌入式/">嵌入式</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C2000/">C2000</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/F28379D/">F28379D</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPIO/">GPIO</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>&emsp;TMS320F28379D是德州仪器公司C2000系列中双核系列高性能微处理器。本文简述如何为CPU1与CPU2分别新建一个工程。随着学习的深入，本文将不断更新优化。</p>
+<a id="more"></a>
+<h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><p>&emsp;本文中开发环境如下：</p>
+<ul>
+<li>操作系统：Windows 10 Home x64</li>
+<li>Code Composer Studio : 7.1.0.00016 </li>
+<li>controlSUITE : 3.4.7</li>
+<li>开发板：<a href="http://www.ti.com.cn/tool/cn/LAUNCHXL-F28379D" target="_blank" rel="external">LAUNCHXL-F28379D</a></li>
+</ul>
+<h2 id="CPU1程序"><a href="#CPU1程序" class="headerlink" title="CPU1程序"></a>CPU1程序</h2><p>&emsp;新建工程的步骤与<a href="http://jiaodi.tech/2017/03/06/%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AAC2000%E5%B7%A5%E7%A8%8B/">新建一个C2000工程</a>类似，这里将介绍主要步骤。</p>
+<h3 id="新建一个空项目"><a href="#新建一个空项目" class="headerlink" title="新建一个空项目"></a>新建一个空项目</h3><p>&emsp;如图所示，在CCS中新建一个F28379D空项目。</p>
+<p><img src="http://omcg8fk23.bkt.clouddn.com/F28379D_NewPro01.png" alt=""></p>
+<h3 id="增加头文件"><a href="#增加头文件" class="headerlink" title="增加头文件"></a>增加头文件</h3><p>&emsp;在工程中新建include文件夹，将controlSuite中下列文件复制到该文件夹下：</p>
+<ul>
+<li><code>controlSUITE\device_support\F2837xD\v210\F2837xD_headers\include</code></li>
+<li><code>controlSUITE\device_support\F2837xD\v210\F2837xD_common\include</code></li>
+</ul>
+<h3 id="增加源文件"><a href="#增加源文件" class="headerlink" title="增加源文件"></a>增加源文件</h3><p>&emsp;在工程中新建source文件夹，将controlSuite中下列文件复制到该文件夹下：</p>
+<ul>
+<li><code>controlSUITE\device_support\F2837xD\v210\F2837xD_common\source</code></li>
+</ul>
+<h3 id="增加位域结构体支持源文件"><a href="#增加位域结构体支持源文件" class="headerlink" title="增加位域结构体支持源文件"></a>增加位域结构体支持源文件</h3><p>&emsp;将如下文件复制到工程根目录下：</p>
+<ul>
+<li><code>controlSUITE\device_support\F2837xD\v210\F2837xD_headers\source\F2837xD_GlobalVariableDefs.c</code></li>
+<li><code>controlSUITE\device_support\F2837xD\v210\F2837xD_headers\cmd\F2837xD_Headers_nonBIOS_cpu1.cmd</code></li>
+</ul>
+<h3 id="设置RAM-lnk文件"><a href="#设置RAM-lnk文件" class="headerlink" title="设置RAM_lnk文件"></a>设置RAM_lnk文件</h3><p>&emsp;在学习过程中建议控制程序在RAM中运行，有助于提高烧写速率并保护器件。将如下文件复制到工程根目录下，同时<code>exclude</code>原有<code>2837x_FLASH_lnk_cpu1.cmd</code>文件：</p>
+<ul>
+<li><code>controlSUITE\device_support\F2837xD\v210\F2837xD_common\cmd\2837xD_RAM_lnk_cpu1.cmd</code></li>
+</ul>
+<h3 id="设置包含选项"><a href="#设置包含选项" class="headerlink" title="设置包含选项"></a>设置包含选项</h3><p>&emsp;将include文件夹添加到包含路径。</p>
+<p><img src="http://omcg8fk23.bkt.clouddn.com/F28379D_NewPro02.png" alt=""></p>
+<h3 id="设置Predefined-Symbols"><a href="#设置Predefined-Symbols" class="headerlink" title="设置Predefined Symbols"></a>设置Predefined Symbols</h3><p>&emsp;TI的库文件中使用宏定义形式设置一些初始化参数以及CPU指定，需要增加如下预定义：</p>
+<p><img src="http://omcg8fk23.bkt.clouddn.com/F28379D_NewPro03.png" alt=""></p>
+<h3 id="使用新工程进行LED闪烁实验"><a href="#使用新工程进行LED闪烁实验" class="headerlink" title="使用新工程进行LED闪烁实验"></a>使用新工程进行LED闪烁实验</h3><p>&emsp;新建项目中<code>main</code>为空函数。为了检验创建的工程是否可以正常使用，这里进行简单的测试。<br>&emsp;在这里，将<code>main.c</code>文件内容替换为如下内容。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"F28x_Project.h"</span></span></div><div class="line"><span class="keyword">int</span> main_loop = <span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">   InitSysCtrl();</div><div class="line"></div><div class="line">   DINT;</div><div class="line">   InitPieCtrl();</div><div class="line"></div><div class="line">   IER = <span class="number">0x0000</span>;</div><div class="line">   IFR = <span class="number">0x0000</span>;</div><div class="line"></div><div class="line">   InitPieVectTable();</div><div class="line"></div><div class="line">   EALLOW;</div><div class="line">   GpioCtrlRegs.GPBGMUX1.bit.GPIO34 = <span class="number">0</span>;</div><div class="line">   GpioCtrlRegs.GPBMUX1.bit.GPIO34 = <span class="number">0</span>;</div><div class="line">   GpioCtrlRegs.GPBDIR.bit.GPIO34 = <span class="number">1</span>;</div><div class="line">   GpioCtrlRegs.GPBCSEL1.bit.GPIO34 = <span class="number">0</span>;    <span class="comment">//CPU1 selected</span></div><div class="line"></div><div class="line">   GpioCtrlRegs.GPAGMUX2.bit.GPIO31 = <span class="number">0</span>;</div><div class="line">   GpioCtrlRegs.GPAMUX2.bit.GPIO31 = <span class="number">0</span>;</div><div class="line">   GpioCtrlRegs.GPADIR.bit.GPIO31 = <span class="number">1</span>;</div><div class="line">   GpioCtrlRegs.GPACSEL4.bit.GPIO31 = <span class="number">2</span>;    <span class="comment">//CPU2 selected</span></div><div class="line">   EDIS;</div><div class="line"></div><div class="line">   EINT;</div><div class="line">   ERTM;</div><div class="line"></div><div class="line">   <span class="keyword">for</span>(;;)</div><div class="line">   &#123;</div><div class="line">       GpioDataRegs.GPBTOGGLE.bit.GPIO34 = <span class="number">1</span>;</div><div class="line">       DELAY_US(<span class="number">500000</span>);</div><div class="line">       main_loop++;</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;编译程序，选择CPU1进行烧写，运行程序。可以看到板子上<code>GPIO34</code>控制的RED LED开始闪烁，闪烁频率约为<code>1Hz</code>。</p>
+<h2 id="CPU2程序"><a href="#CPU2程序" class="headerlink" title="CPU2程序"></a>CPU2程序</h2><p>&emsp;将CPU1的程序复制，在此基础上改为CPU2程序。</p>
+<h3 id="更新RAM-lnk文件"><a href="#更新RAM-lnk文件" class="headerlink" title="更新RAM_lnk文件"></a>更新RAM_lnk文件</h3><p>&emsp;删除原有<code>2837xD_RAM_lnk_cpu1.cmd</code>文件，更换为：</p>
+<ul>
+<li><code>controlSUITE\device_support\F2837xD\v210\F2837xD_common\cmd\2837xD_RAM_lnk_cpu2.cmd</code></li>
+</ul>
+<h3 id="更新F2837xD-Headers-nonBIOS-cpu2文件"><a href="#更新F2837xD-Headers-nonBIOS-cpu2文件" class="headerlink" title="更新F2837xD_Headers_nonBIOS_cpu2文件"></a>更新F2837xD_Headers_nonBIOS_cpu2文件</h3><p>&emsp;删除<code>F2837xD_Headers_nonBIOS_cpu1.cmd</code>，将如下文件复制到工程根目录下：</p>
+<ul>
+<li><code>controlSUITE\device_support\F2837xD\v210\F2837xD_headers\cmd\F2837xD_Headers_nonBIOS_cpu2.cmd</code></li>
+</ul>
+<h3 id="更新Predefined-Symbols"><a href="#更新Predefined-Symbols" class="headerlink" title="更新Predefined Symbols"></a>更新Predefined Symbols</h3><p>&emsp;将Predefined Symbols中<code>CPU1</code>改为<code>CPU2</code>。</p>
+<h3 id="删除部分不支持源文件"><a href="#删除部分不支持源文件" class="headerlink" title="删除部分不支持源文件"></a>删除部分不支持源文件</h3><p>&emsp;此时编译程序，会发现source中部分源文件报错。这是因为<code>部分外设仅支持CPU1控制</code>。<code>需要删除的源文件</code>包括：</p>
+<ul>
+<li><code>F2837xD_ECap.c</code></li>
+<li><code>F2837xD_EPwm.c</code></li>
+<li><code>F2837xD_EQep.c</code></li>
+<li><code>F2837xD_Spi.c</code></li>
+<li><code>F2837xD_TempSensorConv.c</code></li>
+<li><code>F2837xD_Upp.c</code></li>
+</ul>
+<h3 id="使用新工程进行LED闪烁实验-1"><a href="#使用新工程进行LED闪烁实验-1" class="headerlink" title="使用新工程进行LED闪烁实验"></a>使用新工程进行LED闪烁实验</h3><p>&emsp;在这里，将<code>main.c</code>文件内容替换为如下内容。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"F28x_Project.h"</span></span></div><div class="line"><span class="keyword">int</span> main_loop = <span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">   InitSysCtrl();</div><div class="line"></div><div class="line">   DINT;</div><div class="line">   InitPieCtrl();</div><div class="line"></div><div class="line">   IER = <span class="number">0x0000</span>;</div><div class="line">   IFR = <span class="number">0x0000</span>;</div><div class="line"></div><div class="line">   InitPieVectTable();</div><div class="line"></div><div class="line">   EINT;</div><div class="line">   ERTM;</div><div class="line"></div><div class="line">   <span class="keyword">for</span>(;;)</div><div class="line">   &#123;</div><div class="line">       GpioDataRegs.GPATOGGLE.bit.GPIO31 = <span class="number">1</span>;</div><div class="line">       DELAY_US(<span class="number">50000</span>);</div><div class="line">       main_loop++;</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>编译程序，选择CPU2进行烧写，运行程序。可以看到板子上<code>GPIO31</code>控制的BLUE LED开始闪烁，闪烁频率约为<code>10Hz</code>。</p>
+<blockquote>
+<p>注意F28379D烧写程序必须按照CPU1先进行，CPU2后进行的顺序。</p>
+<p>特别鸣谢JOJO同学在本实验中的大力帮助。😄</p>
+</blockquote>
+<p><img src="http://omcg8fk23.bkt.clouddn.com/Reward.jpg" alt=""></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/01/28/F28379D-new-pro-cpu1/">F28379D新建工程</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">焦迪</a></p>
+        <p><span>发布时间:</span>2018-01-28, 16:17:50</p>
+        <p><span>最后更新:</span>2018-01-28, 21:34:45</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/01/28/F28379D-new-pro-cpu1/" title="F28379D新建工程">http://jiaodi.tech/2018/01/28/F28379D-new-pro-cpu1/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://jiaodi.tech/2018/01/28/F28379D-new-pro-cpu1/　　作者: 焦迪" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/02/04/pierce-oscillator/">
+                    Pierce振荡器的原理与设计方法
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/01/23/python-pyinstaller/">
+                    PyInstaller基本用法
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开发环境"><span class="toc-number">1.</span> <span class="toc-text">开发环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CPU1程序"><span class="toc-number">2.</span> <span class="toc-text">CPU1程序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#新建一个空项目"><span class="toc-number">2.1.</span> <span class="toc-text">新建一个空项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增加头文件"><span class="toc-number">2.2.</span> <span class="toc-text">增加头文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增加源文件"><span class="toc-number">2.3.</span> <span class="toc-text">增加源文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增加位域结构体支持源文件"><span class="toc-number">2.4.</span> <span class="toc-text">增加位域结构体支持源文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置RAM-lnk文件"><span class="toc-number">2.5.</span> <span class="toc-text">设置RAM_lnk文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置包含选项"><span class="toc-number">2.6.</span> <span class="toc-text">设置包含选项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置Predefined-Symbols"><span class="toc-number">2.7.</span> <span class="toc-text">设置Predefined Symbols</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用新工程进行LED闪烁实验"><span class="toc-number">2.8.</span> <span class="toc-text">使用新工程进行LED闪烁实验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CPU2程序"><span class="toc-number">3.</span> <span class="toc-text">CPU2程序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#更新RAM-lnk文件"><span class="toc-number">3.1.</span> <span class="toc-text">更新RAM_lnk文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更新F2837xD-Headers-nonBIOS-cpu2文件"><span class="toc-number">3.2.</span> <span class="toc-text">更新F2837xD_Headers_nonBIOS_cpu2文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更新Predefined-Symbols"><span class="toc-number">3.3.</span> <span class="toc-text">更新Predefined Symbols</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除部分不支持源文件"><span class="toc-number">3.4.</span> <span class="toc-text">删除部分不支持源文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用新工程进行LED闪烁实验-1"><span class="toc-number">3.5.</span> <span class="toc-text">使用新工程进行LED闪烁实验</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/01/28/F28379D-new-pro-cpu1/" data-title="F28379D新建工程" data-url="http://jiaodi.tech/2018/01/28/F28379D-new-pro-cpu1/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"null"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/02/04/pierce-oscillator/" title="上一篇: Pierce振荡器的原理与设计方法">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/01/23/python-pyinstaller/" title="下一篇: PyInstaller基本用法">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/08/11/stm32f767-fmc-ad7616/">利用SMT32F767驱动AD7616</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/stm32f767-mpu/">STM32F767 MPU的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/16/stm32f767-sdram/">STM32F767 FMC-SDRAM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/30/stm32f767-qspi/">STM32F767 QUADSPI的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/27/stm32f767-flash/">STM32F767 Flash的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/21/stm32f767-rtc/">STM32F767 RTC的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/19/stm32f767-uart-dma/">STM32F767 DMA的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/07/stm32f767-pwm/">STM32F767 PWM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/28/feedforward-cap/">优化前馈电容改善DCDC的瞬态响应(未完成)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/25/stm32f767-wwdg/">STM32F767 WWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/21/stm32f767-iwdg/">STM32F767 IWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/16/stm32f767-timer/">STM32F767 Timer中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/stm32f767-gpio-it/">STM32F767 GPIO中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/stm32f767-GPIO-UART/">STM32F767 GPIO与UART的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/stm32f767-delay/">STM32F767 delay函数的HAL库实现与优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/23/stm32f767-system/">STM32F767系统内核与时钟设置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/18/stm32f767newpro/">新建一个STM32F767工程(基于HAL库)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/17/stm32f767-start/">使用STM32CubeMX新建STM32F7工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/12/mlcc-noise/">电源应用中MLCC啸叫问题的分析与解决</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/04/pierce-oscillator/">Pierce振荡器的原理与设计方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/28/F28379D-new-pro-cpu1/">F28379D新建工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/23/python-pyinstaller/">PyInstaller基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/HDC1010-C2000/">使用F28069驱动温湿度传感器HDC1010</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/IEEEStd802-11/">IEEE Std 802.11a/g/n/ac</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/08/XDS100-VCP/">加载C2000 XDS100仿真器的虚拟串口(VCP)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/06/MarkdownSyntax/">Markdown基本语法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/21/BuckPowerStage/">Buck电路的功率部分设计</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/myserial/">使用C#构建一个串口程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/09/allegro-guide-2/">Allegro学习笔记-差分线与等长线</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/11/allegro-guide-1/">Allegro学习笔记-基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/04/cadence-allegro-package/">使用Ultra Librarian创建Cadence原理图与PCB封装</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/新建一个C2000工程/">新建一个C2000工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/安装CCS与controlSUITE/">安装CCS与controlSUITE</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2018 焦迪
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

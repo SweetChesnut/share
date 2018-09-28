@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="焦迪" />
+
+
+
+<meta name="description" content="&amp;emsp;在学习TI C2000系列DSP之前，需要首先安装好开发环境CCS与对应软件套件controlSUITE。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安装CCS与controlSUITE">
+<meta property="og:url" content="http://jiaodi.tech/2017/03/06/安装CCS与controlSUITE/index.html">
+<meta property="og:site_name" content="焦迪的博客">
+<meta property="og:description" content="&amp;emsp;在学习TI C2000系列DSP之前，需要首先安装好开发环境CCS与对应软件套件controlSUITE。">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/00.jpg">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/01.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/02.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/03.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/04.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/05.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/06.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/07.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/08.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/09.jpg">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/17.jpg">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/10.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/11.jpg">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/12.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/13.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/14.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/15.png">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/16.png">
+<meta property="og:updated_time" content="2017-03-06T12:47:53.423Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="安装CCS与controlSUITE">
+<meta name="twitter:description" content="&amp;emsp;在学习TI C2000系列DSP之前，需要首先安装好开发环境CCS与对应软件套件controlSUITE。">
+<meta name="twitter:image" content="http://omcg8fk23.bkt.clouddn.com/00.jpg">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="焦迪的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="http://omcg8fk23.bkt.clouddn.com/Jay.jpg">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>安装CCS与controlSUITE | 焦迪的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+
+
+</head>
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">焦迪</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">Shape of my heart.</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/802-11/">802.11</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AD7616/">AD7616</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Allegro/">Allegro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Buck/">Buck</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C#</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C2000/">C2000</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CCS/">CCS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cadence/">Cadence</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DCDC/">DCDC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DMA/">DMA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSP/">DSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/F28379D/">F28379D</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FMC/">FMC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flash/">Flash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPIO/">GPIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HDC1010/">HDC1010</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I2C/">I2C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IWDG/">IWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keil/">Keil</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MAC/">MAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MLCC/">MLCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MPU/">MPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Noise/">Noise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCB/">PCB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHY/">PHY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PWM/">PWM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pierce/">Pierce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyInstaller/">PyInstaller</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QUADSPI/">QUADSPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RTC/">RTC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDRAM/">SDRAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32CubeMX/">STM32CubeMX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32F7/">STM32F7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sensor/">Sensor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Systick/">Systick</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Timer/">Timer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UART/">UART</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WWDG/">WWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XDS100/">XDS100</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/crystal/">crystal</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interrupt/">interrupt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oscillator/">oscillator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serial/">serial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/串口/">串口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前馈电容/">前馈电容</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态响应/">动态响应</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/封装/">封装</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/差分线/">差分线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/等长线/">等长线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高速电路/">高速电路</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://zhangxb.tech/">张晓斌</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://gaomf.cn/">高明飞</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://tongzai.tech/">桐仔</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">雨下整夜，此刻初晴.</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">焦迪</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">焦迪</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">Shape of my heart.</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-安装CCS与controlSUITE" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/03/06/安装CCS与controlSUITE/" class="article-date">
+      <time datetime="2017-03-06T02:11:59.000Z" itemprop="datePublished">2017-03-06</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      安装CCS与controlSUITE
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/嵌入式/">嵌入式</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C2000/">C2000</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CCS/">CCS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DSP/">DSP</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>&emsp;在学习TI C2000系列DSP之前，需要首先安装好开发环境CCS与对应软件套件controlSUITE。</p>
+<a id="more"></a>
+<h2 id="CCS的安装"><a href="#CCS的安装" class="headerlink" title="CCS的安装"></a>CCS的安装</h2><p><img src="http://omcg8fk23.bkt.clouddn.com/00.jpg" alt=""><br>&emsp;Code Composer Studio™ (CCStudio) 是用于德州仪器 (TI) 嵌入式处理器系列的集成开发环境 (IDE)。 CCStudio 包含一整套用于开发和调试嵌入式应用的工具。 它包含适用于每个 TI 器件系列的编译器、源码编辑器、项目构建环境、调试器、描述器、仿真器、实时操作系统以及多种其他功能。 直观的 IDE 提供了单个用户界面，可帮助用户完成应用开发流程的每个步骤。借助于精密的高效工具，用户能够利用熟悉的工具和界面快速上手并将功能添加至他们的应用。<br>&emsp;Code Composer Studio 以 Eclipse 开源软件框架为基础。<br>&emsp;Code Composer Studio 可在 Windows 和 Linux PC 上运行。 并非所有功能或器件都与 Linux 兼容，详细信息请参见 Linux 主机支持。</p>
+<h3 id="CCS集成开发环境的下载"><a href="#CCS集成开发环境的下载" class="headerlink" title="CCS集成开发环境的下载"></a>CCS集成开发环境的下载</h3><p>&emsp;CCS可以在德州仪器官网（www.ti.com.cn）下载。可参考TI 网页上的WIKI 中有关CCStudio 安装的描述。<a href="http://processors.wiki.ti.com/index.php/GSG:CCSv5_installation" target="_blank" rel="external">下载网址</a><br>&emsp;登陆TI官网后，在搜索栏输入code composer studio或CCS并点击搜索，即可获得相关资料。<br>&emsp;下载CCS需要使用TI账户登录。创建TI账户可以下载TI更多的软件资料和使用一些在线仿真工具等。如果使用教育邮箱或企业邮箱申请，还可以进行申请样片等。</p>
+<h3 id="CCS集成开发环境的安装"><a href="#CCS集成开发环境的安装" class="headerlink" title="CCS集成开发环境的安装"></a>CCS集成开发环境的安装</h3><p>&emsp;注意：</p>
+<ul>
+<li>1.安装CCS的过程中，请务必保证计算机的<strong>杀毒软件和防火墙软件已经关闭</strong>，否则在安装过程中很可能失败或者部分组件无法安装；</li>
+<li>2.CCS安装路径与后续的工作空间<strong>所在路径严禁出现中文字符</strong>；</li>
+<li>3.对于win 8用户，请注意<strong>系统用户名必须是英文字符</strong>，出现中文很有可能安装失败无法使用。<br>&emsp;经实验，CCS可在win 7和win 8平台运行，对32位和64位系统兼容。建议读者使用win 7或者win 8平台计算机。</li>
+</ul>
+<ol>
+<li>运行下载的安装程序ccs_setup.exe，当进入安装目录界面时，可以点击Browse进行安装路径的选择，但推荐直接安装在默认的C盘中。<br><img src="http://omcg8fk23.bkt.clouddn.com/01.png" alt=""></li>
+<li>当运行到下图处时，选择Custom选项，进入手动选择安装通道。如果下载的为在线安装包，需要在安装过程中保证联网。<br><img src="http://omcg8fk23.bkt.clouddn.com/02.png" alt=""></li>
+<li>单击Next得到如下图所示的窗口，为了安装快捷，在此只选择支持C28x 32-bit Real-time MCUS的选项。单击Next，保持默认配置，继续安装。CCS目前不支持在安装完毕后增加器件支持的安装，故如有可能，建议同时安装可能用到的器件，以避免重装的麻烦。<br><img src="http://omcg8fk23.bkt.clouddn.com/03.png" alt=""><br><img src="http://omcg8fk23.bkt.clouddn.com/04.png" alt=""><br><img src="http://omcg8fk23.bkt.clouddn.com/05.png" alt=""></li>
+<li>安装过程中出现的对话框全部选择“安装”选项。安装完毕后，出现以下界面。<br><img src="http://omcg8fk23.bkt.clouddn.com/06.png" alt=""><br>&emsp;单击Finish，往往要求先重启Windows。至此，CCS安装完毕。<br>&emsp;之后将运行CCS，弹出如下图所示窗口，单击Browse，将工作区间链接到所建文件夹。CCS首先要求的是定义一个工作区，即用于保存开发过程中用到的所有元素（项目和指向项目的链接，可能还有源代码）的目录。默认情况下，会在C:\Users\&lt;用户&gt;\Documents 或C:\Documents and Settings\&lt;用户&gt;\My Documents目录下创建工作区，但可以任意选择其位置。每次执行CCS都会要求工作区目录。如果计划对所有项目使用一个目录，只需选中“Use this as the default and do not ask again（默认使用此目录且不再询问）”选项。以后随时可以在CCS中更改工作区。<br>&emsp;实验中，使用了如图的文件夹作为工作空间。工作文件可能较多，可以在D或E盘中单独建立文件夹并以芯片的名字建立子目录。如：D:\ti\tms320f28069。<br><img src="http://omcg8fk23.bkt.clouddn.com/07.png" alt=""></li>
+<li>单击OK，第一次运行CCS需进行软件许可的选择，如下图所示。在此，选择FREE LICENSE选项，在该选项下，使用XDS100仿真器将不限制代码容量使用。而我们学习C2000系列DSP即使用该仿真器。若您有软件许可，可以参考<a href="http://processors.wiki.ti.com/index.php/GSG:CCSv5_Running_for_the_first_time" target="_blank" rel="external">链接</a>进行软件许可的认证.<br><img src="http://omcg8fk23.bkt.clouddn.com/08.png" alt=""></li>
+<li>单击Finish即可进入CCSv5 软件开发集成环境，如下图所示。<br><img src="http://omcg8fk23.bkt.clouddn.com/09.jpg" alt=""></li>
+</ol>
+<h2 id="controlSUITE的安装"><a href="#controlSUITE的安装" class="headerlink" title="controlSUITE的安装"></a>controlSUITE的安装</h2><p><img src="http://omcg8fk23.bkt.clouddn.com/17.jpg" alt=""><br>&emsp;controlSUITE是德州仪器公司为C2000系列微处理器设计的一款集软件、硬件与技术资料一体的复合套件。套件中提供了C2000全套器件的示例程序，这对学习该系列器件非常有用。示例程序展示了绝大多数外设的常用使用方法和技巧，借助示例程序，我们可以更快入手C2000器件的学习，或者直接借助其底层驱动进行开发。<br>&emsp;controlSUITE中包含了完善的设备初始化函数和绝大多数外设的底层驱动函数，我们可以借助其更好地入手学习C2000设备。因此，本节我们将介绍controlSUITE的安装与使用方法。</p>
+<h3 id="controlSUITE的下载"><a href="#controlSUITE的下载" class="headerlink" title="controlSUITE的下载"></a>controlSUITE的下载</h3><p>&emsp;controlSUITE可以在德州仪器官网（www.ti.com.cn）下载。<br>&emsp;登陆TI官网后，在搜索栏输入controlSUITE并点击搜索，即可获得相关资料。<br>&emsp;下载controlSUITE同样需要使用TI账户登录。</p>
+<h3 id="controlSUITE的安装-1"><a href="#controlSUITE的安装-1" class="headerlink" title="controlSUITE的安装"></a>controlSUITE的安装</h3><ol>
+<li>将压缩包解压，运行下载的安装程序controlSUITE.exe。运行到下图步骤时，可以自定义选择安装地址。<br>&emsp;示例中，controlSUITE安装于D盘下ti文件夹下。该地址需要记住，后续需要使用该地址将controlSUITE导入到CCS中。<br><img src="http://omcg8fk23.bkt.clouddn.com/10.png" alt=""></li>
+<li>安装完成后，可以打开controlSUITE套件所在安装目录下的controlSUITE.exe，即可打开使用。<br><img src="http://omcg8fk23.bkt.clouddn.com/11.jpg" alt=""></li>
+<li>controlSUITE中包含了众多的技术资料，以Piccolo F2806x为例，其中包含了技术手册、用户指南和示例程序等多种资料。<br><img src="http://omcg8fk23.bkt.clouddn.com/12.png" alt=""></li>
+</ol>
+<h2 id="将controlSUITE添加进CCS"><a href="#将controlSUITE添加进CCS" class="headerlink" title="将controlSUITE添加进CCS"></a>将controlSUITE添加进CCS</h2><p>&emsp;controlSUITE可以通过CCS的资源管理器进行管理。通过CCS管理，可以更便捷地使用controlSUITE的资源，例如导入其中的示例程序进行学习等。<br>&emsp;事实上，TI针对不同器件均有类似组件包。例如msp430的430WARE和TIVA系列ARM的TIVAWARE，也都可以通过如下方法导入到CCS中进行管理。<br>&emsp;本节将介绍将controlSUITE导入CCS的方法。</p>
+<ol>
+<li>打开CCS，选择菜单栏中View-&gt;Resource Explore，即可打开TI资源管理器。<br><img src="http://omcg8fk23.bkt.clouddn.com/13.png" alt=""></li>
+<li>在资源管理器左上角packages右侧，有Add additional packages按钮。<br><img src="http://omcg8fk23.bkt.clouddn.com/14.png" alt=""></li>
+<li>单击按钮，出现Package Configuration界面。选择Add按钮，在浏览文件夹中选择controlSUITE所在的目录。点击确定。<br><img src="http://omcg8fk23.bkt.clouddn.com/15.png" alt=""></li>
+<li>之后回到Package Configuration界面，点击OK。CCS将完成controlSUITE的导入。<br><img src="http://omcg8fk23.bkt.clouddn.com/16.png" alt=""></li>
+<li>在完成导入后，在packages栏可以选择controlSUITE。此时可以通过CCS完成对controlSUITE资源的使用。</li>
+</ol>
+<!--  &nbsp; -->
+<!--  **祝大家学习顺利~**; -->
+<!--  &nbsp; -->
+<!--  ![](http://omcg8fk23.bkt.clouddn.com/Reward.jpg) -->
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/03/06/安装CCS与controlSUITE/">安装CCS与controlSUITE</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">焦迪</a></p>
+        <p><span>发布时间:</span>2017-03-06, 10:11:59</p>
+        <p><span>最后更新:</span>2017-03-06, 20:47:53</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/03/06/安装CCS与controlSUITE/" title="安装CCS与controlSUITE">http://jiaodi.tech/2017/03/06/安装CCS与controlSUITE/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://jiaodi.tech/2017/03/06/安装CCS与controlSUITE/　　作者: 焦迪" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/03/06/新建一个C2000工程/">
+                    新建一个C2000工程
+                </a>
+            </div>
+        
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CCS的安装"><span class="toc-number">1.</span> <span class="toc-text">CCS的安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CCS集成开发环境的下载"><span class="toc-number">1.1.</span> <span class="toc-text">CCS集成开发环境的下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CCS集成开发环境的安装"><span class="toc-number">1.2.</span> <span class="toc-text">CCS集成开发环境的安装</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#controlSUITE的安装"><span class="toc-number">2.</span> <span class="toc-text">controlSUITE的安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#controlSUITE的下载"><span class="toc-number">2.1.</span> <span class="toc-text">controlSUITE的下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#controlSUITE的安装-1"><span class="toc-number">2.2.</span> <span class="toc-text">controlSUITE的安装</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#将controlSUITE添加进CCS"><span class="toc-number">3.</span> <span class="toc-text">将controlSUITE添加进CCS</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2017/03/06/安装CCS与controlSUITE/" data-title="安装CCS与controlSUITE" data-url="http://jiaodi.tech/2017/03/06/安装CCS与controlSUITE/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"null"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/03/06/新建一个C2000工程/" title="上一篇: 新建一个C2000工程">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/08/11/stm32f767-fmc-ad7616/">利用SMT32F767驱动AD7616</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/stm32f767-mpu/">STM32F767 MPU的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/16/stm32f767-sdram/">STM32F767 FMC-SDRAM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/30/stm32f767-qspi/">STM32F767 QUADSPI的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/27/stm32f767-flash/">STM32F767 Flash的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/21/stm32f767-rtc/">STM32F767 RTC的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/19/stm32f767-uart-dma/">STM32F767 DMA的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/07/stm32f767-pwm/">STM32F767 PWM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/28/feedforward-cap/">优化前馈电容改善DCDC的瞬态响应(未完成)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/25/stm32f767-wwdg/">STM32F767 WWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/21/stm32f767-iwdg/">STM32F767 IWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/16/stm32f767-timer/">STM32F767 Timer中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/stm32f767-gpio-it/">STM32F767 GPIO中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/stm32f767-GPIO-UART/">STM32F767 GPIO与UART的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/stm32f767-delay/">STM32F767 delay函数的HAL库实现与优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/23/stm32f767-system/">STM32F767系统内核与时钟设置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/18/stm32f767newpro/">新建一个STM32F767工程(基于HAL库)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/17/stm32f767-start/">使用STM32CubeMX新建STM32F7工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/12/mlcc-noise/">电源应用中MLCC啸叫问题的分析与解决</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/04/pierce-oscillator/">Pierce振荡器的原理与设计方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/28/F28379D-new-pro-cpu1/">F28379D新建工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/23/python-pyinstaller/">PyInstaller基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/HDC1010-C2000/">使用F28069驱动温湿度传感器HDC1010</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/IEEEStd802-11/">IEEE Std 802.11a/g/n/ac</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/08/XDS100-VCP/">加载C2000 XDS100仿真器的虚拟串口(VCP)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/06/MarkdownSyntax/">Markdown基本语法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/21/BuckPowerStage/">Buck电路的功率部分设计</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/myserial/">使用C#构建一个串口程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/09/allegro-guide-2/">Allegro学习笔记-差分线与等长线</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/11/allegro-guide-1/">Allegro学习笔记-基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/04/cadence-allegro-package/">使用Ultra Librarian创建Cadence原理图与PCB封装</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/新建一个C2000工程/">新建一个C2000工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/安装CCS与controlSUITE/">安装CCS与controlSUITE</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2018 焦迪
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="焦迪" />
+
+
+
+<meta name="description" content="&amp;emsp;本文介绍STM32F767 RTC(Real-time clock)的基本用法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STM32F767 RTC的基本用法">
+<meta property="og:url" content="http://jiaodi.tech/2018/05/21/stm32f767-rtc/index.html">
+<meta property="og:site_name" content="焦迪的博客">
+<meta property="og:description" content="&amp;emsp;本文介绍STM32F767 RTC(Real-time clock)的基本用法。">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/stm32f757_rtc01.png">
+<meta property="og:updated_time" content="2018-06-02T03:08:11.210Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="STM32F767 RTC的基本用法">
+<meta name="twitter:description" content="&amp;emsp;本文介绍STM32F767 RTC(Real-time clock)的基本用法。">
+<meta name="twitter:image" content="http://omcg8fk23.bkt.clouddn.com/stm32f757_rtc01.png">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="焦迪的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="http://omcg8fk23.bkt.clouddn.com/Jay.jpg">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>STM32F767 RTC的基本用法 | 焦迪的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+
+
+</head>
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">焦迪</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">Shape of my heart.</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/802-11/">802.11</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AD7616/">AD7616</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Allegro/">Allegro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Buck/">Buck</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C#</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C2000/">C2000</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CCS/">CCS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cadence/">Cadence</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DCDC/">DCDC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DMA/">DMA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSP/">DSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/F28379D/">F28379D</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FMC/">FMC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flash/">Flash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPIO/">GPIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HDC1010/">HDC1010</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I2C/">I2C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IWDG/">IWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keil/">Keil</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MAC/">MAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MLCC/">MLCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MPU/">MPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Noise/">Noise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCB/">PCB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHY/">PHY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PWM/">PWM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pierce/">Pierce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyInstaller/">PyInstaller</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QUADSPI/">QUADSPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RTC/">RTC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDRAM/">SDRAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32CubeMX/">STM32CubeMX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32F7/">STM32F7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sensor/">Sensor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Systick/">Systick</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Timer/">Timer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UART/">UART</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WWDG/">WWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XDS100/">XDS100</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/crystal/">crystal</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interrupt/">interrupt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oscillator/">oscillator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serial/">serial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/串口/">串口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前馈电容/">前馈电容</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态响应/">动态响应</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/封装/">封装</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/差分线/">差分线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/等长线/">等长线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高速电路/">高速电路</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://zhangxb.tech/">张晓斌</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://gaomf.cn/">高明飞</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://tongzai.tech/">桐仔</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">雨下整夜，此刻初晴.</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">焦迪</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">焦迪</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">Shape of my heart.</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-stm32f767-rtc" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/05/21/stm32f767-rtc/" class="article-date">
+      <time datetime="2018-05-21T15:12:27.000Z" itemprop="datePublished">2018-05-21</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      STM32F767 RTC的基本用法
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/嵌入式/">嵌入式</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RTC/">RTC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/STM32F7/">STM32F7</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>&emsp;本文介绍STM32F767 RTC(Real-time clock)的基本用法。</p>
+<a id="more"></a>
+<h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><h3 id="硬件环境"><a href="#硬件环境" class="headerlink" title="硬件环境"></a>硬件环境</h3><ul>
+<li>电脑：Windows 10 Home x64</li>
+<li>Apollo STM32F767开发板(ST-LINK V2仿真器)</li>
+</ul>
+<h3 id="软件环境"><a href="#软件环境" class="headerlink" title="软件环境"></a>软件环境</h3><ul>
+<li>Keil Version 5.24.1 (Pack Installer：Keil.STM32F7xx_DFP.2.9.0.pack)</li>
+<li>STM32CubeMX Version 4.25.0(Packages Manager：STM32CubeF7)</li>
+</ul>
+<h2 id="RTC功能介绍"><a href="#RTC功能介绍" class="headerlink" title="RTC功能介绍"></a>RTC功能介绍</h2><h3 id="RTC主要特性"><a href="#RTC主要特性" class="headerlink" title="RTC主要特性"></a>RTC主要特性</h3><ul>
+<li>包含亚秒、秒、分钟、小时（12/24 小时制）、星期几、日期、月份和年份的日历；</li>
+<li>软件可编程的夏令时补偿；</li>
+<li>具有中断功能的可编程闹钟。可通过任意日历字段的组合触发闹钟；</li>
+<li>自动唤醒单元，可周期性地生成标志以触发自动唤醒中断；</li>
+<li>参考时钟检测：可使用更加精确的第二时钟源（50 Hz 或 60 Hz）来提高日历的精确度；</li>
+<li>利用亚秒级移位特性与外部时钟实现精确同步；</li>
+<li>数字校准电路（周期性计数器调整）：精度为 0.95 ppm，在数秒钟的校准窗口中获得；</li>
+<li>用于事件保存的时间戳功能；</li>
+<li>带可配置过滤器和内部上拉的入侵检测事件；</li>
+<li>可屏蔽中断/事件：闹钟A、闹钟B、唤醒中断、时间戳、入侵检测</li>
+<li>32备份寄存器。</li>
+</ul>
+<h3 id="RTC系统框图"><a href="#RTC系统框图" class="headerlink" title="RTC系统框图"></a>RTC系统框图</h3><p><img src="http://omcg8fk23.bkt.clouddn.com/stm32f757_rtc01.png" alt=""></p>
+<p>&emsp;本例中仅使用RTC的基本功能：设置RTC事件后进行读取操作，故不再对框图进行说明。</p>
+<h2 id="RTC的基本用法"><a href="#RTC的基本用法" class="headerlink" title="RTC的基本用法"></a>RTC的基本用法</h2><h3 id="RTC时钟设置"><a href="#RTC时钟设置" class="headerlink" title="RTC时钟设置"></a>RTC时钟设置</h3><p>&emsp;本例中，使用外部低速时钟<code>LSE作为时钟源</code>，其频率为<code>32.768kHz</code>。</p>
+<p>&emsp;RTC的时钟设置函数如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief RTC Clock Configuration</div><div class="line">  * @retval None</div><div class="line">  */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">RTC_Clock_Config</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">  RCC_OscInitTypeDef RCC_OscInitStruct;</div><div class="line">  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct;</div><div class="line"></div><div class="line">    <span class="comment">/**Configure the main internal regulator output voltage</span></div><div class="line">    */</div><div class="line">  __HAL_RCC_PWR_CLK_ENABLE();</div><div class="line"></div><div class="line">  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);</div><div class="line"></div><div class="line">    <span class="comment">/**初始化LSE时钟：32.768kHz</span></div><div class="line">    */</div><div class="line">  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSE;		<span class="comment">/* LSE配置 */</span></div><div class="line">  RCC_OscInitStruct.LSEState = RCC_LSE_ON;							<span class="comment">/* LSE使能 */</span></div><div class="line">  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;					<span class="comment">/* LSE无PLL */</span></div><div class="line">  <span class="keyword">if</span> (HAL_RCC_OscConfig(&amp;RCC_OscInitStruct) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC;		<span class="comment">/* 外设为RTC */</span></div><div class="line">  PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;		<span class="comment">/* RTC时钟源为LSE */</span></div><div class="line">  <span class="keyword">if</span> (HAL_RCCEx_PeriphCLKConfig(&amp;PeriphClkInitStruct) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;RTC时钟初始化函数的主要功能如下：</p>
+<ul>
+<li>使能外部LSE时钟，LSE无PLL功能；</li>
+<li>设置RTC的时钟源为LSE。</li>
+</ul>
+<h3 id="RTC初始化函数"><a href="#RTC初始化函数" class="headerlink" title="RTC初始化函数"></a>RTC初始化函数</h3><p>&emsp;RTC初始化函数如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">RTC_HandleTypeDef hrtc;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> RTC_BKP_Mask	0x5051</span></div><div class="line"></div><div class="line"><span class="comment">/* RTC init function */</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">MX_RTC_Init</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">  RTC_TimeTypeDef sTime;</div><div class="line">  RTC_DateTypeDef sDate;</div><div class="line"></div><div class="line">    <span class="comment">/**Initialize RTC Only </span></div><div class="line">    */</div><div class="line">  hrtc.Instance = RTC;</div><div class="line"><span class="keyword">if</span>(HAL_RTCEx_BKUPRead(&amp;hrtc, RTC_BKP_DR0) != RTC_BKP_Mask)&#123;</div><div class="line">  hrtc.Init.HourFormat = RTC_HOURFORMAT_24;						<span class="comment">/* 24小时制 */</span></div><div class="line">  hrtc.Init.AsynchPrediv = <span class="number">127</span>;</div><div class="line">  hrtc.Init.SynchPrediv = <span class="number">255</span>;									<span class="comment">/* 分频系数 = 128 * 256 = 32768 */</span></div><div class="line">  hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;						<span class="comment">/* 禁用RTC output输出 */</span></div><div class="line">  hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;</div><div class="line">  hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;</div><div class="line">  <span class="keyword">if</span> (HAL_RTC_Init(&amp;hrtc) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**初始化RTC时间与日期 </span></div><div class="line">    */</div><div class="line">  sTime.Hours = <span class="number">23</span>;</div><div class="line">  sTime.Minutes = <span class="number">8</span>;</div><div class="line">  sTime.Seconds = <span class="number">50</span>;</div><div class="line">  sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;				<span class="comment">/* 关闭夏令时 */</span></div><div class="line">  sTime.StoreOperation = RTC_STOREOPERATION_RESET;</div><div class="line">  <span class="keyword">if</span> (HAL_RTC_SetTime(&amp;hrtc, &amp;sTime, RTC_FORMAT_BIN) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  sDate.WeekDay = RTC_WEEKDAY_WEDNESDAY;</div><div class="line">  sDate.Month = RTC_MONTH_MAY;</div><div class="line">  sDate.Date = <span class="number">30</span>;</div><div class="line">  sDate.Year = <span class="number">18</span>;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (HAL_RTC_SetDate(&amp;hrtc, &amp;sDate, RTC_FORMAT_BIN) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    _Error_Handler(__FILE__, __LINE__);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">    HAL_RTCEx_BKUPWrite(&amp;hrtc,RTC_BKP_DR0,RTC_BKP_Mask);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;初始化函数的功能如下：</p>
+<ul>
+<li>设置RTC为24小时制；</li>
+<li>设置RTC分频系数，32.768kHz时钟分频后为1Hz；</li>
+<li>初始化RTC；</li>
+<li>设置RTC时分秒，关闭夏令时；</li>
+<li>设置RTC年月日星期；</li>
+<li>初始化RTC时间与日期。</li>
+</ul>
+<h3 id="HAL-RTC-Init-函数实现"><a href="#HAL-RTC-Init-函数实现" class="headerlink" title="HAL_RTC_Init()函数实现"></a>HAL_RTC_Init()函数实现</h3><p>&emsp;<code>HAL_RTC_Init()</code>函数用于初始化RTC，其实现如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Initializes the RTC peripheral </div><div class="line">  * @param  hrtc pointer to a RTC_HandleTypeDef structure that contains</div><div class="line">  *                the configuration information for RTC.</div><div class="line">  * @retval HAL status</div><div class="line">  */</div><div class="line"><span class="function">HAL_StatusTypeDef <span class="title">HAL_RTC_Init</span><span class="params">(RTC_HandleTypeDef *hrtc)</span></span></div><div class="line">&#123;</div><div class="line">  <span class="comment">/* Check the RTC peripheral state */</span></div><div class="line">  <span class="keyword">if</span>(hrtc == <span class="literal">NULL</span>)</div><div class="line">  &#123;</div><div class="line">     <span class="keyword">return</span> HAL_ERROR;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="comment">/* Check the parameters */</span></div><div class="line">  assert_param(IS_RTC_ALL_INSTANCE(hrtc-&gt;Instance));</div><div class="line">  assert_param(IS_RTC_HOUR_FORMAT(hrtc-&gt;Init.HourFormat));</div><div class="line">  assert_param(IS_RTC_ASYNCH_PREDIV(hrtc-&gt;Init.AsynchPrediv));</div><div class="line">  assert_param(IS_RTC_SYNCH_PREDIV(hrtc-&gt;Init.SynchPrediv));</div><div class="line">  assert_param (IS_RTC_OUTPUT(hrtc-&gt;Init.OutPut));</div><div class="line">  assert_param (IS_RTC_OUTPUT_POL(hrtc-&gt;Init.OutPutPolarity));</div><div class="line">  assert_param(IS_RTC_OUTPUT_TYPE(hrtc-&gt;Init.OutPutType));</div><div class="line">    </div><div class="line">  <span class="keyword">if</span>(hrtc-&gt;State == HAL_RTC_STATE_RESET)</div><div class="line">  &#123;</div><div class="line">    <span class="comment">/* Allocate lock resource and initialize it */</span></div><div class="line">    hrtc-&gt;Lock = HAL_UNLOCKED;</div><div class="line">    <span class="comment">/* Initialize RTC MSP */</span></div><div class="line">    HAL_RTC_MspInit(hrtc);								<span class="comment">/* 使能RTC时钟 */</span></div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="comment">/* Set RTC state */</span>  </div><div class="line">  hrtc-&gt;State = HAL_RTC_STATE_BUSY;  </div><div class="line">       </div><div class="line">  <span class="comment">/* Disable the write protection for RTC registers */</span></div><div class="line">  __HAL_RTC_WRITEPROTECTION_DISABLE(hrtc);				<span class="comment">/* 解锁RTC寄存器的写保护 */</span></div><div class="line"></div><div class="line">  <span class="comment">/* Set Initialization mode */</span></div><div class="line">  <span class="keyword">if</span>(RTC_EnterInitMode(hrtc) != HAL_OK)					<span class="comment">/* 进入RTC初始化模式 */</span></div><div class="line">  &#123;</div><div class="line">    <span class="comment">/* Enable the write protection for RTC registers */</span></div><div class="line">    __HAL_RTC_WRITEPROTECTION_ENABLE(hrtc); </div><div class="line">    </div><div class="line">    <span class="comment">/* Set RTC state */</span></div><div class="line">    hrtc-&gt;State = HAL_RTC_STATE_ERROR;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> HAL_ERROR;</div><div class="line">  &#125; </div><div class="line">  <span class="keyword">else</span></div><div class="line">  &#123; </div><div class="line">    <span class="comment">/* Clear RTC_CR FMT, OSEL and POL Bits */</span></div><div class="line">    hrtc-&gt;Instance-&gt;CR &amp;= ((<span class="keyword">uint32_t</span>)~(RTC_CR_FMT | RTC_CR_OSEL | RTC_CR_POL));	<span class="comment">/* 配置RTC模式 */</span></div><div class="line">    <span class="comment">/* Set RTC_CR register */</span></div><div class="line">    hrtc-&gt;Instance-&gt;CR |= (<span class="keyword">uint32_t</span>)(hrtc-&gt;Init.HourFormat | hrtc-&gt;Init.OutPut | hrtc-&gt;Init.OutPutPolarity);</div><div class="line">    </div><div class="line">    <span class="comment">/* Configure the RTC PRER */</span>												<span class="comment">/* 配置RTC分频系数 */</span></div><div class="line">    hrtc-&gt;Instance-&gt;PRER = (<span class="keyword">uint32_t</span>)(hrtc-&gt;Init.SynchPrediv);</div><div class="line">    hrtc-&gt;Instance-&gt;PRER |= (<span class="keyword">uint32_t</span>)(hrtc-&gt;Init.AsynchPrediv &lt;&lt; <span class="number">16</span>);</div><div class="line">    </div><div class="line">    <span class="comment">/* Exit Initialization mode */</span></div><div class="line">    hrtc-&gt;Instance-&gt;ISR &amp;= (<span class="keyword">uint32_t</span>)~RTC_ISR_INIT;								<span class="comment">/* 跳出初始化模式 */</span> </div><div class="line">    </div><div class="line">    hrtc-&gt;Instance-&gt;OR &amp;= (<span class="keyword">uint32_t</span>)~RTC_OR_ALARMTYPE;							<span class="comment">/* ALARM TIMESTAMP IO设置 */</span> </div><div class="line">    hrtc-&gt;Instance-&gt;OR |= (<span class="keyword">uint32_t</span>)(hrtc-&gt;Init.OutPutType); </div><div class="line">    </div><div class="line">    <span class="comment">/* Enable the write protection for RTC registers */</span></div><div class="line">    __HAL_RTC_WRITEPROTECTION_ENABLE(hrtc); 									<span class="comment">/* 上锁RTC寄存器的写保护 */</span></div><div class="line">    </div><div class="line">    <span class="comment">/* Set RTC state */</span></div><div class="line">    hrtc-&gt;State = HAL_RTC_STATE_READY;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> HAL_OK;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;<code>HAL_RTC_MspInit()</code>函数仅用于使能RTC时钟，具体如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">HAL_RTC_MspInit</span><span class="params">(RTC_HandleTypeDef* rtcHandle)</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">  <span class="keyword">if</span>(rtcHandle-&gt;Instance==RTC)</div><div class="line">  &#123;</div><div class="line">  <span class="comment">/* USER CODE BEGIN RTC_MspInit 0 */</span></div><div class="line"></div><div class="line">  <span class="comment">/* USER CODE END RTC_MspInit 0 */</span></div><div class="line">    <span class="comment">/* RTC clock enable */</span></div><div class="line">    __HAL_RCC_RTC_ENABLE();</div><div class="line">  <span class="comment">/* USER CODE BEGIN RTC_MspInit 1 */</span></div><div class="line"></div><div class="line">  <span class="comment">/* USER CODE END RTC_MspInit 1 */</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;RTC具有寄存器写保护功能，进行寄存器写入之前必须首先进行解锁。解锁的操作为：按顺序写入<code>0xCA</code>与<code>0x53</code>即可<code>解锁所有RTC寄存器</code>；写入一个错误的关键字会<code>再次激活写保护</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Disable the write protection for RTC registers.</div><div class="line">  * @param  __HANDLE__ specifies the RTC handle.</div><div class="line">  * @retval None</div><div class="line">  */</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __HAL_RTC_WRITEPROTECTION_DISABLE(__HANDLE__)             \</span></div><div class="line">                        do&#123;                                       \</div><div class="line">                            (__HANDLE__)-&gt;Instance-&gt;WPR = 0xCAU;   \</div><div class="line">                            (__HANDLE__)-&gt;Instance-&gt;WPR = 0x53U;   \</div><div class="line">                          &#125; while(0U)</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Enable the write protection for RTC registers.</div><div class="line">  * @param  __HANDLE__ specifies the RTC handle.</div><div class="line">  * @retval None</div><div class="line">  */</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __HAL_RTC_WRITEPROTECTION_ENABLE(__HANDLE__)              \</span></div><div class="line">                        do&#123;                                       \</div><div class="line">                            (__HANDLE__)-&gt;Instance-&gt;WPR = 0xFFU;   \</div><div class="line">                          &#125; while(0U)</div></pre></td></tr></table></figure>
+<p>&emsp;<code>RTC_EnterInitMode()</code>函数用于将RTC设置为初始化模式。通过将RTC <code>RTC_ISR</code>寄存器<code>INIT</code>位置位实现。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Enters the RTC Initialization mode.</div><div class="line">  * @note   The RTC Initialization mode is write protected, use the</div><div class="line">  *         __HAL_RTC_WRITEPROTECTION_DISABLE() before calling this function.</div><div class="line">  * @param  hrtc pointer to a RTC_HandleTypeDef structure that contains</div><div class="line">  *                the configuration information for RTC.</div><div class="line">  * @retval HAL status</div><div class="line">  */</div><div class="line"><span class="function">HAL_StatusTypeDef <span class="title">RTC_EnterInitMode</span><span class="params">(RTC_HandleTypeDef* hrtc)</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">uint32_t</span> tickstart = <span class="number">0</span>; </div><div class="line">  </div><div class="line">  <span class="comment">/* Check if the Initialization mode is set */</span></div><div class="line">  <span class="keyword">if</span>((hrtc-&gt;Instance-&gt;ISR &amp; RTC_ISR_INITF) == (<span class="keyword">uint32_t</span>)RESET)</div><div class="line">  &#123;</div><div class="line">    <span class="comment">/* Set the Initialization mode */</span></div><div class="line">    hrtc-&gt;Instance-&gt;ISR = (<span class="keyword">uint32_t</span>)RTC_INIT_MASK;</div><div class="line"></div><div class="line">    <span class="comment">/* Get tick */</span></div><div class="line">    tickstart = HAL_GetTick();</div><div class="line"></div><div class="line">    <span class="comment">/* Wait till RTC is in INIT state and if Time out is reached exit */</span></div><div class="line">    <span class="keyword">while</span>((hrtc-&gt;Instance-&gt;ISR &amp; RTC_ISR_INITF) == (<span class="keyword">uint32_t</span>)RESET)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">if</span>((HAL_GetTick() - tickstart ) &gt; RTC_TIMEOUT_VALUE)</div><div class="line">      &#123;       </div><div class="line">        <span class="keyword">return</span> HAL_TIMEOUT;</div><div class="line">      &#125; </div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="keyword">return</span> HAL_OK;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;之后进入主配置环节，具体配置如下：</p>
+<ul>
+<li>通过<code>RTC_CR</code>寄存器<code>FMT</code>、<code>OSEL</code>、<code>POL</code>位分别设置<code>小时格式</code>、<code>输出选择</code>与<code>输出极性</code>，本例设置为<code>24小时制</code>，输出禁用；</li>
+<li>通过<code>RTC_PRER</code>寄存器设置预分频系数；</li>
+<li>跳出初始化模式；</li>
+<li>设置ALARM与TIMESTAMP，本例中不使用；</li>
+<li>上锁RTC寄存器写保护。</li>
+</ul>
+<h3 id="HAL-RTC-SetTime-函数实现"><a href="#HAL-RTC-SetTime-函数实现" class="headerlink" title="HAL_RTC_SetTime()函数实现"></a>HAL_RTC_SetTime()函数实现</h3><p>&emsp;<code>HAL_RTC_SetTime()</code>函数用于设置RTC时间，具体实现如下。该函数的核心功能为通过向RTC时间寄存器RTC_TR写入时分秒时间实现，本例中不启用夏令时。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Sets RTC current time.</div><div class="line">  * @param  hrtc pointer to a RTC_HandleTypeDef structure that contains</div><div class="line">  *                the configuration information for RTC.</div><div class="line">  * @param  sTime Pointer to Time structure</div><div class="line">  * @param  Format Specifies the format of the entered parameters.</div><div class="line">  *          This parameter can be one of the following values:</div><div class="line">  *            @arg FORMAT_BIN: Binary data format </div><div class="line">  *            @arg FORMAT_BCD: BCD data format</div><div class="line">  * @retval HAL status</div><div class="line">  */</div><div class="line"><span class="function">HAL_StatusTypeDef <span class="title">HAL_RTC_SetTime</span><span class="params">(RTC_HandleTypeDef *hrtc, RTC_TimeTypeDef *sTime, <span class="keyword">uint32_t</span> Format)</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">uint32_t</span> tmpreg = <span class="number">0</span>;</div><div class="line">  </div><div class="line"> <span class="comment">/* Check the parameters */</span></div><div class="line">  assert_param(IS_RTC_FORMAT(Format));</div><div class="line">  assert_param(IS_RTC_DAYLIGHT_SAVING(sTime-&gt;DayLightSaving));</div><div class="line">  assert_param(IS_RTC_STORE_OPERATION(sTime-&gt;StoreOperation));</div><div class="line">  </div><div class="line">  <span class="comment">/* Process Locked */</span> </div><div class="line">  __HAL_LOCK(hrtc);</div><div class="line">  </div><div class="line">  hrtc-&gt;State = HAL_RTC_STATE_BUSY;</div><div class="line">  </div><div class="line">  <span class="keyword">if</span>(Format == RTC_FORMAT_BIN)</div><div class="line">  &#123;</div><div class="line">    <span class="keyword">if</span>((hrtc-&gt;Instance-&gt;CR &amp; RTC_CR_FMT) != (<span class="keyword">uint32_t</span>)RESET)</div><div class="line">    &#123;</div><div class="line">      assert_param(IS_RTC_HOUR12(sTime-&gt;Hours));</div><div class="line">      assert_param(IS_RTC_HOURFORMAT12(sTime-&gt;TimeFormat));</div><div class="line">    &#125; </div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">      sTime-&gt;TimeFormat = <span class="number">0x00</span>;</div><div class="line">      assert_param(IS_RTC_HOUR24(sTime-&gt;Hours));</div><div class="line">    &#125;</div><div class="line">    assert_param(IS_RTC_MINUTES(sTime-&gt;Minutes));</div><div class="line">    assert_param(IS_RTC_SECONDS(sTime-&gt;Seconds));</div><div class="line">    </div><div class="line">    tmpreg = (<span class="keyword">uint32_t</span>)(((<span class="keyword">uint32_t</span>)RTC_ByteToBcd2(sTime-&gt;Hours) &lt;&lt; <span class="number">16</span>) | \</div><div class="line">                        ((<span class="keyword">uint32_t</span>)RTC_ByteToBcd2(sTime-&gt;Minutes) &lt;&lt; <span class="number">8</span>) | \</div><div class="line">                        ((<span class="keyword">uint32_t</span>)RTC_ByteToBcd2(sTime-&gt;Seconds)) | \</div><div class="line">                        (((<span class="keyword">uint32_t</span>)sTime-&gt;TimeFormat) &lt;&lt; <span class="number">16</span>));  </div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span></div><div class="line">  &#123;</div><div class="line">    <span class="keyword">if</span>((hrtc-&gt;Instance-&gt;CR &amp; RTC_CR_FMT) != (<span class="keyword">uint32_t</span>)RESET)</div><div class="line">    &#123;</div><div class="line">      tmpreg = RTC_Bcd2ToByte(sTime-&gt;Hours);</div><div class="line">      assert_param(IS_RTC_HOUR12(tmpreg));</div><div class="line">      assert_param(IS_RTC_HOURFORMAT12(sTime-&gt;TimeFormat)); </div><div class="line">    &#125; </div><div class="line">    <span class="keyword">else</span></div><div class="line">    &#123;</div><div class="line">      sTime-&gt;TimeFormat = <span class="number">0x00</span>;</div><div class="line">      assert_param(IS_RTC_HOUR24(RTC_Bcd2ToByte(sTime-&gt;Hours)));</div><div class="line">    &#125;</div><div class="line">    assert_param(IS_RTC_MINUTES(RTC_Bcd2ToByte(sTime-&gt;Minutes)));</div><div class="line">    assert_param(IS_RTC_SECONDS(RTC_Bcd2ToByte(sTime-&gt;Seconds)));</div><div class="line">    tmpreg = (((<span class="keyword">uint32_t</span>)(sTime-&gt;Hours) &lt;&lt; <span class="number">16</span>) | \</div><div class="line">              ((<span class="keyword">uint32_t</span>)(sTime-&gt;Minutes) &lt;&lt; <span class="number">8</span>) | \</div><div class="line">              ((<span class="keyword">uint32_t</span>)sTime-&gt;Seconds) | \</div><div class="line">              ((<span class="keyword">uint32_t</span>)(sTime-&gt;TimeFormat) &lt;&lt; <span class="number">16</span>));   </div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="comment">/* Disable the write protection for RTC registers */</span></div><div class="line">  __HAL_RTC_WRITEPROTECTION_DISABLE(hrtc);</div><div class="line">  </div><div class="line">  <span class="comment">/* Set Initialization mode */</span></div><div class="line">  <span class="keyword">if</span>(RTC_EnterInitMode(hrtc) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    <span class="comment">/* Enable the write protection for RTC registers */</span></div><div class="line">    __HAL_RTC_WRITEPROTECTION_ENABLE(hrtc); </div><div class="line">    </div><div class="line">    <span class="comment">/* Set RTC state */</span></div><div class="line">    hrtc-&gt;State = HAL_RTC_STATE_ERROR;</div><div class="line">    </div><div class="line">    <span class="comment">/* Process Unlocked */</span> </div><div class="line">    __HAL_UNLOCK(hrtc);</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> HAL_ERROR;</div><div class="line">  &#125; </div><div class="line">  <span class="keyword">else</span></div><div class="line">  &#123;</div><div class="line">    <span class="comment">/* Set the RTC_TR register */</span></div><div class="line">    hrtc-&gt;Instance-&gt;TR = (<span class="keyword">uint32_t</span>)(tmpreg &amp; RTC_TR_RESERVED_MASK);</div><div class="line">     </div><div class="line">    <span class="comment">/* Clear the bits to be configured */</span></div><div class="line">    hrtc-&gt;Instance-&gt;CR &amp;= (<span class="keyword">uint32_t</span>)~RTC_CR_BKP;</div><div class="line">    </div><div class="line">    <span class="comment">/* Configure the RTC_CR register */</span></div><div class="line">    hrtc-&gt;Instance-&gt;CR |= (<span class="keyword">uint32_t</span>)(sTime-&gt;DayLightSaving | sTime-&gt;StoreOperation);</div><div class="line">    </div><div class="line">    <span class="comment">/* Exit Initialization mode */</span></div><div class="line">    hrtc-&gt;Instance-&gt;ISR &amp;= (<span class="keyword">uint32_t</span>)~RTC_ISR_INIT;  </div><div class="line">    </div><div class="line">    <span class="comment">/* If  CR_BYPSHAD bit = 0, wait for synchro else this check is not needed */</span></div><div class="line">    <span class="keyword">if</span>((hrtc-&gt;Instance-&gt;CR &amp; RTC_CR_BYPSHAD) == RESET)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">if</span>(HAL_RTC_WaitForSynchro(hrtc) != HAL_OK)</div><div class="line">      &#123;        </div><div class="line">        <span class="comment">/* Enable the write protection for RTC registers */</span></div><div class="line">        __HAL_RTC_WRITEPROTECTION_ENABLE(hrtc);  </div><div class="line">        </div><div class="line">        hrtc-&gt;State = HAL_RTC_STATE_ERROR;</div><div class="line">        </div><div class="line">        <span class="comment">/* Process Unlocked */</span> </div><div class="line">        __HAL_UNLOCK(hrtc);</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> HAL_ERROR;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">/* Enable the write protection for RTC registers */</span></div><div class="line">    __HAL_RTC_WRITEPROTECTION_ENABLE(hrtc);</div><div class="line">    </div><div class="line">   hrtc-&gt;State = HAL_RTC_STATE_READY;</div><div class="line">  </div><div class="line">   __HAL_UNLOCK(hrtc); </div><div class="line">     </div><div class="line">   <span class="keyword">return</span> HAL_OK;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="HAL-RTC-SetDate-函数实现"><a href="#HAL-RTC-SetDate-函数实现" class="headerlink" title="HAL_RTC_SetDate()函数实现"></a>HAL_RTC_SetDate()函数实现</h3><p>&emsp;<code>HAL_RTC_SetDate()</code>函数用于设置RTC日期，具体实现如下。该函数的核心功能为通过向RTC时间寄存器<code>RTC_DR</code>写入年月日以及周时间实现。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Sets RTC current date.</div><div class="line">  * @param  hrtc pointer to a RTC_HandleTypeDef structure that contains</div><div class="line">  *                the configuration information for RTC.</div><div class="line">  * @param  sDate Pointer to date structure</div><div class="line">  * @param  Format specifies the format of the entered parameters.</div><div class="line">  *          This parameter can be one of the following values:</div><div class="line">  *            @arg RTC_FORMAT_BIN: Binary data format </div><div class="line">  *            @arg RTC_FORMAT_BCD: BCD data format</div><div class="line">  * @retval HAL status</div><div class="line">  */</div><div class="line"><span class="function">HAL_StatusTypeDef <span class="title">HAL_RTC_SetDate</span><span class="params">(RTC_HandleTypeDef *hrtc, RTC_DateTypeDef *sDate, <span class="keyword">uint32_t</span> Format)</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">uint32_t</span> datetmpreg = <span class="number">0</span>;</div><div class="line">  </div><div class="line"> <span class="comment">/* Check the parameters */</span></div><div class="line">  assert_param(IS_RTC_FORMAT(Format));</div><div class="line">  </div><div class="line"> <span class="comment">/* Process Locked */</span> </div><div class="line"> __HAL_LOCK(hrtc);</div><div class="line">  </div><div class="line">  hrtc-&gt;State = HAL_RTC_STATE_BUSY; </div><div class="line">  </div><div class="line">  <span class="keyword">if</span>((Format == RTC_FORMAT_BIN) &amp;&amp; ((sDate-&gt;Month &amp; <span class="number">0x10</span>U) == <span class="number">0x10</span>U))</div><div class="line">  &#123;</div><div class="line">    sDate-&gt;Month = (<span class="keyword">uint8_t</span>)((sDate-&gt;Month &amp; (<span class="keyword">uint8_t</span>)~(<span class="number">0x10</span>U)) + (<span class="keyword">uint8_t</span>)<span class="number">0x0A</span>U);</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  assert_param(IS_RTC_WEEKDAY(sDate-&gt;WeekDay));</div><div class="line">  </div><div class="line">  <span class="keyword">if</span>(Format == RTC_FORMAT_BIN)</div><div class="line">  &#123;   </div><div class="line">    assert_param(IS_RTC_YEAR(sDate-&gt;Year));</div><div class="line">    assert_param(IS_RTC_MONTH(sDate-&gt;Month));</div><div class="line">    assert_param(IS_RTC_DATE(sDate-&gt;Date)); </div><div class="line">    </div><div class="line">   datetmpreg = (((<span class="keyword">uint32_t</span>)RTC_ByteToBcd2(sDate-&gt;Year) &lt;&lt; <span class="number">16</span>) | \</div><div class="line">                 ((<span class="keyword">uint32_t</span>)RTC_ByteToBcd2(sDate-&gt;Month) &lt;&lt; <span class="number">8</span>) | \</div><div class="line">                 ((<span class="keyword">uint32_t</span>)RTC_ByteToBcd2(sDate-&gt;Date)) | \</div><div class="line">                 ((<span class="keyword">uint32_t</span>)sDate-&gt;WeekDay &lt;&lt; <span class="number">13</span>));   </div><div class="line">  &#125;</div><div class="line">  <span class="keyword">else</span></div><div class="line">  &#123;   </div><div class="line">    assert_param(IS_RTC_YEAR(RTC_Bcd2ToByte(sDate-&gt;Year)));</div><div class="line">    assert_param(IS_RTC_MONTH(sDate-&gt;Month));</div><div class="line">    assert_param(IS_RTC_DATE(sDate-&gt;Date));</div><div class="line">    </div><div class="line">    datetmpreg = ((((<span class="keyword">uint32_t</span>)sDate-&gt;Year) &lt;&lt; <span class="number">16</span>) | \</div><div class="line">                  (((<span class="keyword">uint32_t</span>)sDate-&gt;Month) &lt;&lt; <span class="number">8</span>) | \</div><div class="line">                  ((<span class="keyword">uint32_t</span>)sDate-&gt;Date) | \</div><div class="line">                  (((<span class="keyword">uint32_t</span>)sDate-&gt;WeekDay) &lt;&lt; <span class="number">13</span>));  </div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">/* Disable the write protection for RTC registers */</span></div><div class="line">  __HAL_RTC_WRITEPROTECTION_DISABLE(hrtc);</div><div class="line">  </div><div class="line">  <span class="comment">/* Set Initialization mode */</span></div><div class="line">  <span class="keyword">if</span>(RTC_EnterInitMode(hrtc) != HAL_OK)</div><div class="line">  &#123;</div><div class="line">    <span class="comment">/* Enable the write protection for RTC registers */</span></div><div class="line">    __HAL_RTC_WRITEPROTECTION_ENABLE(hrtc); </div><div class="line">    </div><div class="line">    <span class="comment">/* Set RTC state*/</span></div><div class="line">    hrtc-&gt;State = HAL_RTC_STATE_ERROR;</div><div class="line">    </div><div class="line">    <span class="comment">/* Process Unlocked */</span> </div><div class="line">    __HAL_UNLOCK(hrtc);</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> HAL_ERROR;</div><div class="line">  &#125; </div><div class="line">  <span class="keyword">else</span></div><div class="line">  &#123;</div><div class="line">    <span class="comment">/* Set the RTC_DR register */</span></div><div class="line">    hrtc-&gt;Instance-&gt;DR = (<span class="keyword">uint32_t</span>)(datetmpreg &amp; RTC_DR_RESERVED_MASK);</div><div class="line">    </div><div class="line">    <span class="comment">/* Exit Initialization mode */</span></div><div class="line">    hrtc-&gt;Instance-&gt;ISR &amp;= (<span class="keyword">uint32_t</span>)~RTC_ISR_INIT;  </div><div class="line">    </div><div class="line">    <span class="comment">/* If  CR_BYPSHAD bit = 0, wait for synchro else this check is not needed */</span></div><div class="line">    <span class="keyword">if</span>((hrtc-&gt;Instance-&gt;CR &amp; RTC_CR_BYPSHAD) == RESET)</div><div class="line">    &#123;</div><div class="line">      <span class="keyword">if</span>(HAL_RTC_WaitForSynchro(hrtc) != HAL_OK)</div><div class="line">      &#123; </div><div class="line">        <span class="comment">/* Enable the write protection for RTC registers */</span></div><div class="line">        __HAL_RTC_WRITEPROTECTION_ENABLE(hrtc);  </div><div class="line">        </div><div class="line">        hrtc-&gt;State = HAL_RTC_STATE_ERROR;</div><div class="line">        </div><div class="line">        <span class="comment">/* Process Unlocked */</span> </div><div class="line">        __HAL_UNLOCK(hrtc);</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> HAL_ERROR;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">/* Enable the write protection for RTC registers */</span></div><div class="line">    __HAL_RTC_WRITEPROTECTION_ENABLE(hrtc);  </div><div class="line">    </div><div class="line">    hrtc-&gt;State = HAL_RTC_STATE_READY ;</div><div class="line">    </div><div class="line">    <span class="comment">/* Process Unlocked */</span> </div><div class="line">    __HAL_UNLOCK(hrtc);</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> HAL_OK;    </div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="HAL-RTCEx-BKUPRead-Write-函数实现"><a href="#HAL-RTCEx-BKUPRead-Write-函数实现" class="headerlink" title="HAL_RTCEx_BKUPRead/Write()函数实现"></a>HAL_RTCEx_BKUPRead/Write()函数实现</h3><p>&emsp;RTC有32个备份寄存器，可以用于存储一些特征变量。本例中RTC初始化函数展示了备份寄存器的一个用法：用于标记是否进行过RTC初始化，防止重新上电对RTC进行重复初始化。RTC初始化函数首先读取本分寄存器0存储的数值，如果与比对值不一致则初始化RTC；当初始化完成重新上电后，寄存器值与比对值一致，所以不再重新初始化。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Reads data from the specified RTC Backup data Register.</div><div class="line">  * @param  hrtc pointer to a RTC_HandleTypeDef structure that contains</div><div class="line">  *                the configuration information for RTC. </div><div class="line">  * @param  BackupRegister RTC Backup data Register number.</div><div class="line">  *          This parameter can be: RTC_BKP_DRx where x can be from 0 to 19 to </div><div class="line">  *                                 specify the register.                   </div><div class="line">  * @retval Read value</div><div class="line">  */</div><div class="line"><span class="keyword">uint32_t</span> HAL_RTCEx_BKUPRead(RTC_HandleTypeDef *hrtc, <span class="keyword">uint32_t</span> BackupRegister)</div><div class="line">&#123;</div><div class="line">  <span class="keyword">uint32_t</span> tmp = <span class="number">0</span>;</div><div class="line">  </div><div class="line">  <span class="comment">/* Check the parameters */</span></div><div class="line">  assert_param(IS_RTC_BKP(BackupRegister));</div><div class="line"></div><div class="line">  tmp = (<span class="keyword">uint32_t</span>)&amp;(hrtc-&gt;Instance-&gt;BKP0R);</div><div class="line">  tmp += (BackupRegister * <span class="number">4</span>);</div><div class="line">  </div><div class="line">  <span class="comment">/* Read the specified register */</span></div><div class="line">  <span class="keyword">return</span> (*(__IO <span class="keyword">uint32_t</span> *)tmp);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  Writes a data in a specified RTC Backup data register.</div><div class="line">  * @param  hrtc pointer to a RTC_HandleTypeDef structure that contains</div><div class="line">  *                the configuration information for RTC. </div><div class="line">  * @param  BackupRegister RTC Backup data Register number.</div><div class="line">  *          This parameter can be: RTC_BKP_DRx where x can be from 0 to 19 to </div><div class="line">  *                                 specify the register.</div><div class="line">  * @param  Data Data to be written in the specified RTC Backup data register.                     </div><div class="line">  * @retval None</div><div class="line">  */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">HAL_RTCEx_BKUPWrite</span><span class="params">(RTC_HandleTypeDef *hrtc, <span class="keyword">uint32_t</span> BackupRegister, <span class="keyword">uint32_t</span> Data)</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">uint32_t</span> tmp = <span class="number">0</span>;</div><div class="line">  </div><div class="line">  <span class="comment">/* Check the parameters */</span></div><div class="line">  assert_param(IS_RTC_BKP(BackupRegister));</div><div class="line">  </div><div class="line">  tmp = (<span class="keyword">uint32_t</span>)&amp;(hrtc-&gt;Instance-&gt;BKP0R);</div><div class="line">  tmp += (BackupRegister * <span class="number">4</span>);</div><div class="line">  </div><div class="line">  <span class="comment">/* Write the specified register */</span></div><div class="line">  *(__IO <span class="keyword">uint32_t</span> *)tmp = (<span class="keyword">uint32_t</span>)Data;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="实验验证"><a href="#实验验证" class="headerlink" title="实验验证"></a>实验验证</h2><p>&emsp;RTC初始化完成后可以对RTC时间进行读取，具体方法如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> (<span class="number">1</span>)</div><div class="line">&#123;</div><div class="line"> mainloop++;	  </div><div class="line"> oled_putuint32(<span class="number">0</span>, <span class="number">2</span>, mainloop);</div><div class="line"></div><div class="line"> HAL_RTC_GetTime(&amp;hrtc, &amp;rtcTime, RTC_FORMAT_BIN);</div><div class="line"> LCD_P6x8Num3(<span class="number">0</span>, <span class="number">5</span>, rtcTime.Hours);</div><div class="line"> LCD_P6x8Num3(<span class="number">4</span>, <span class="number">5</span>, rtcTime.Minutes);</div><div class="line"> LCD_P6x8Num3(<span class="number">8</span>, <span class="number">5</span>, rtcTime.Seconds);</div><div class="line"> 	  </div><div class="line"> HAL_RTC_GetDate(&amp;hrtc, &amp;rtcData, RTC_FORMAT_BIN);</div><div class="line"> LCD_P6x8Num3(<span class="number">0</span>, <span class="number">4</span>, rtcData.Year);</div><div class="line"> LCD_P6x8Num3(<span class="number">4</span>, <span class="number">4</span>, rtcData.Month);</div><div class="line"> LCD_P6x8Num3(<span class="number">8</span>, <span class="number">4</span>, rtcData.Date);</div><div class="line"> 	  </div><div class="line"> SYS_Delay_US(<span class="number">500000</span>);</div><div class="line"> 	  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;运行程序后，可以看到时间、日期读取正确；断电后由于后备电池的存在RTC依然可以计时。</p>
+<p>有一点需要注意的是，<code>HAL_RTC_GetTime()</code>函数必须先于<code>HAL_RTC_GetDate()</code>函数调用，ST对此的解释如下：</p>
+<blockquote>
+<p>关于这个问题，读日历时间时有两种模式。</p>
+<p>一种是通过影子寄存器来读取，一种是直接日历计数器中读。你谈到的情况是前者。</p>
+<p>在该情形下，建议先读时分秒寄存器即TR寄存器，然后读日期寄存器，即DR寄存器。</p>
+<p>在读取TR/SSR寄存器后，DR影子寄存器的数据会被锁定而不被更新，直到你来读它，这</p>
+<p>样是为了保持数据的一致性。</p>
+<p>比如你在5月29日的23:59:59秒去读该时间【TR/SSR】，此时29日就会被锁定，这样你</p>
+<p>可以悠然地去读日期，日期还是正确的29日，否则1秒过后去读的话，你读到日期就是30日</p>
+<p>了，显然整个读进来的时间就不对了。</p>
+</blockquote>
+<p>&emsp;本例中<code>RTC_CR</code>寄存器的<code>BYPSHAD</code>位设置为<code>0</code>，即日历值（从 RTC_SSR、RTC_TR 和 RTC_DR 读取时）取自影子寄存器，该影子寄存器每两个 RTCCLK 周期更新一次，对应了上述情况，所以应该按照先读TR寄存器，再读DR寄存器的方式。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/05/21/stm32f767-rtc/">STM32F767 RTC的基本用法</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">焦迪</a></p>
+        <p><span>发布时间:</span>2018-05-21, 23:12:27</p>
+        <p><span>最后更新:</span>2018-06-02, 11:08:11</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/05/21/stm32f767-rtc/" title="STM32F767 RTC的基本用法">http://jiaodi.tech/2018/05/21/stm32f767-rtc/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://jiaodi.tech/2018/05/21/stm32f767-rtc/　　作者: 焦迪" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/05/27/stm32f767-flash/">
+                    STM32F767 Flash的基本用法
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/05/19/stm32f767-uart-dma/">
+                    STM32F767 DMA的基本用法
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开发环境"><span class="toc-number">1.</span> <span class="toc-text">开发环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件环境"><span class="toc-number">1.1.</span> <span class="toc-text">硬件环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#软件环境"><span class="toc-number">1.2.</span> <span class="toc-text">软件环境</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RTC功能介绍"><span class="toc-number">2.</span> <span class="toc-text">RTC功能介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RTC主要特性"><span class="toc-number">2.1.</span> <span class="toc-text">RTC主要特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RTC系统框图"><span class="toc-number">2.2.</span> <span class="toc-text">RTC系统框图</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RTC的基本用法"><span class="toc-number">3.</span> <span class="toc-text">RTC的基本用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RTC时钟设置"><span class="toc-number">3.1.</span> <span class="toc-text">RTC时钟设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RTC初始化函数"><span class="toc-number">3.2.</span> <span class="toc-text">RTC初始化函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HAL-RTC-Init-函数实现"><span class="toc-number">3.3.</span> <span class="toc-text">HAL_RTC_Init()函数实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HAL-RTC-SetTime-函数实现"><span class="toc-number">3.4.</span> <span class="toc-text">HAL_RTC_SetTime()函数实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HAL-RTC-SetDate-函数实现"><span class="toc-number">3.5.</span> <span class="toc-text">HAL_RTC_SetDate()函数实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HAL-RTCEx-BKUPRead-Write-函数实现"><span class="toc-number">3.6.</span> <span class="toc-text">HAL_RTCEx_BKUPRead/Write()函数实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实验验证"><span class="toc-number">4.</span> <span class="toc-text">实验验证</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/05/21/stm32f767-rtc/" data-title="STM32F767 RTC的基本用法" data-url="http://jiaodi.tech/2018/05/21/stm32f767-rtc/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"null"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/05/27/stm32f767-flash/" title="上一篇: STM32F767 Flash的基本用法">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/05/19/stm32f767-uart-dma/" title="下一篇: STM32F767 DMA的基本用法">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/08/11/stm32f767-fmc-ad7616/">利用SMT32F767驱动AD7616</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/stm32f767-mpu/">STM32F767 MPU的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/16/stm32f767-sdram/">STM32F767 FMC-SDRAM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/30/stm32f767-qspi/">STM32F767 QUADSPI的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/27/stm32f767-flash/">STM32F767 Flash的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/21/stm32f767-rtc/">STM32F767 RTC的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/19/stm32f767-uart-dma/">STM32F767 DMA的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/07/stm32f767-pwm/">STM32F767 PWM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/28/feedforward-cap/">优化前馈电容改善DCDC的瞬态响应(未完成)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/25/stm32f767-wwdg/">STM32F767 WWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/21/stm32f767-iwdg/">STM32F767 IWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/16/stm32f767-timer/">STM32F767 Timer中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/stm32f767-gpio-it/">STM32F767 GPIO中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/stm32f767-GPIO-UART/">STM32F767 GPIO与UART的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/stm32f767-delay/">STM32F767 delay函数的HAL库实现与优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/23/stm32f767-system/">STM32F767系统内核与时钟设置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/18/stm32f767newpro/">新建一个STM32F767工程(基于HAL库)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/17/stm32f767-start/">使用STM32CubeMX新建STM32F7工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/12/mlcc-noise/">电源应用中MLCC啸叫问题的分析与解决</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/04/pierce-oscillator/">Pierce振荡器的原理与设计方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/28/F28379D-new-pro-cpu1/">F28379D新建工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/23/python-pyinstaller/">PyInstaller基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/HDC1010-C2000/">使用F28069驱动温湿度传感器HDC1010</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/IEEEStd802-11/">IEEE Std 802.11a/g/n/ac</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/08/XDS100-VCP/">加载C2000 XDS100仿真器的虚拟串口(VCP)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/06/MarkdownSyntax/">Markdown基本语法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/21/BuckPowerStage/">Buck电路的功率部分设计</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/myserial/">使用C#构建一个串口程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/09/allegro-guide-2/">Allegro学习笔记-差分线与等长线</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/11/allegro-guide-1/">Allegro学习笔记-基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/04/cadence-allegro-package/">使用Ultra Librarian创建Cadence原理图与PCB封装</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/新建一个C2000工程/">新建一个C2000工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/安装CCS与controlSUITE/">安装CCS与controlSUITE</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2018 焦迪
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

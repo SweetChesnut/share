@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="焦迪" />
+
+
+
+<meta name="description" content="&amp;emsp;本文介绍STM32F767 delay函数的HAL库实现与优化。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STM32F767 delay函数的HAL库实现与优化">
+<meta property="og:url" content="http://jiaodi.tech/2018/03/29/stm32f767-delay/index.html">
+<meta property="og:site_name" content="焦迪的博客">
+<meta property="og:description" content="&amp;emsp;本文介绍STM32F767 delay函数的HAL库实现与优化。">
+<meta property="og:image" content="http://omcg8fk23.bkt.clouddn.com/Reward.jpg">
+<meta property="og:updated_time" content="2018-04-05T10:07:31.523Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="STM32F767 delay函数的HAL库实现与优化">
+<meta name="twitter:description" content="&amp;emsp;本文介绍STM32F767 delay函数的HAL库实现与优化。">
+<meta name="twitter:image" content="http://omcg8fk23.bkt.clouddn.com/Reward.jpg">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="焦迪的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="http://omcg8fk23.bkt.clouddn.com/Jay.jpg">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>STM32F767 delay函数的HAL库实现与优化 | 焦迪的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+
+
+</head>
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">焦迪</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">Shape of my heart.</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/802-11/">802.11</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AD7616/">AD7616</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Allegro/">Allegro</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Buck/">Buck</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C#</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C2000/">C2000</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CCS/">CCS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cadence/">Cadence</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DCDC/">DCDC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DMA/">DMA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DSP/">DSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/F28379D/">F28379D</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FMC/">FMC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flash/">Flash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPIO/">GPIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HDC1010/">HDC1010</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/I2C/">I2C</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IWDG/">IWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keil/">Keil</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MAC/">MAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MLCC/">MLCC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MPU/">MPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Markdown/">Markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Noise/">Noise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCB/">PCB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHY/">PHY</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PWM/">PWM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pierce/">Pierce</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PyInstaller/">PyInstaller</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/QUADSPI/">QUADSPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RTC/">RTC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDRAM/">SDRAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32CubeMX/">STM32CubeMX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/STM32F7/">STM32F7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sensor/">Sensor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Systick/">Systick</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Timer/">Timer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UART/">UART</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WWDG/">WWDG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XDS100/">XDS100</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/crystal/">crystal</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interrupt/">interrupt</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oscillator/">oscillator</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/serial/">serial</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/串口/">串口</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前馈电容/">前馈电容</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态响应/">动态响应</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/封装/">封装</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/差分线/">差分线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/等长线/">等长线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高速电路/">高速电路</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://zhangxb.tech/">张晓斌</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://gaomf.cn/">高明飞</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://tongzai.tech/">桐仔</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">雨下整夜，此刻初晴.</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">焦迪</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="http://omcg8fk23.bkt.clouddn.com/Jay.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">焦迪</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">Shape of my heart.</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:nemojiao@qq.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/nemoj" title="GitHub"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-stm32f767-delay" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2018/03/29/stm32f767-delay/" class="article-date">
+      <time datetime="2018-03-29T11:48:22.000Z" itemprop="datePublished">2018-03-29</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      STM32F767 delay函数的HAL库实现与优化
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/嵌入式/">嵌入式</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/STM32CubeMX/">STM32CubeMX</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/STM32F7/">STM32F7</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Systick/">Systick</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>&emsp;本文介绍STM32F767 delay函数的HAL库实现与优化。</p>
+<a id="more"></a>
+<h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><h3 id="硬件环境"><a href="#硬件环境" class="headerlink" title="硬件环境"></a>硬件环境</h3><ul>
+<li>电脑：Windows 10 Home x64</li>
+<li>Apollo STM32F767开发板(ST-LINK V2仿真器)</li>
+</ul>
+<h3 id="软件环境"><a href="#软件环境" class="headerlink" title="软件环境"></a>软件环境</h3><ul>
+<li>Keil Version 5.24.1 (Pack Installer：Keil.STM32F7xx_DFP.2.9.0.pack)</li>
+<li>STM32CubeMX Version 4.25.0(Packages Manager：STM32CubeF7)</li>
+</ul>
+<h2 id="HAL库实现方式"><a href="#HAL库实现方式" class="headerlink" title="HAL库实现方式"></a>HAL库实现方式</h2><p>&emsp;首先了解HAL库中delay的实现方式。</p>
+<h3 id="SYSTICK初始化"><a href="#SYSTICK初始化" class="headerlink" title="SYSTICK初始化"></a>SYSTICK初始化</h3><p>&emsp;初始化函数如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">  <span class="comment">/**Configure the Systick interrupt time</span></div><div class="line">  */</div><div class="line">HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/<span class="number">1000</span>);</div><div class="line"></div><div class="line">  <span class="comment">/**Configure the Systick</span></div><div class="line">  */</div><div class="line">HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);</div><div class="line"></div><div class="line"><span class="comment">/* SysTick_IRQn interrupt configuration */</span></div><div class="line">HAL_NVIC_SetPriority(SysTick_IRQn, <span class="number">0</span>, <span class="number">0</span>);</div></pre></td></tr></table></figure>
+<p>&emsp;初始化函数中将SYSTICK时钟源设置为HCLK，同时将SYSTICK中断周期设置为1ms。</p>
+<h3 id="SYSTICK中断函数"><a href="#SYSTICK中断函数" class="headerlink" title="SYSTICK中断函数"></a>SYSTICK中断函数</h3><p>&emsp;中断函数如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">  * @brief  This function handles SysTick Handler.</div><div class="line">  * @param  None</div><div class="line">  * @retval None</div><div class="line">  */</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">SysTick_Handler</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">  HAL_IncTick();</div><div class="line">&#125;</div><div class="line"></div><div class="line">__<span class="function">weak <span class="keyword">void</span> <span class="title">HAL_IncTick</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">  uwTick += uwTickFreq;</div><div class="line">&#125;</div><div class="line"></div><div class="line">HAL_TickFreqTypeDef uwTickFreq = HAL_TICK_FREQ_DEFAULT;  <span class="comment">/* 1KHz */</span></div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span></div><div class="line">&#123;</div><div class="line">  HAL_TICK_FREQ_10HZ         = <span class="number">100U</span>,</div><div class="line">  HAL_TICK_FREQ_100HZ        = <span class="number">10U</span>,</div><div class="line">  HAL_TICK_FREQ_1KHZ         = <span class="number">1U</span>,</div><div class="line">  HAL_TICK_FREQ_DEFAULT      = HAL_TICK_FREQ_1KHZ</div><div class="line">&#125; HAL_TickFreqTypeDef;</div></pre></td></tr></table></figure>
+<p>&emsp;中断服务函数的最终功能是对uwTick进行加1操作，即1ms中断则uwTick增加1。</p>
+<h3 id="delay函数"><a href="#delay函数" class="headerlink" title="delay函数"></a>delay函数</h3><p>&emsp;函数实现如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">__<span class="function">weak <span class="keyword">void</span> <span class="title">HAL_Delay</span><span class="params">(<span class="keyword">uint32_t</span> Delay)</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">uint32_t</span> tickstart = HAL_GetTick();</div><div class="line">  <span class="keyword">uint32_t</span> wait = Delay;</div><div class="line"></div><div class="line">  <span class="comment">/* Add a freq to guarantee minimum wait */</span></div><div class="line">  <span class="keyword">if</span> (wait &lt; HAL_MAX_DELAY)</div><div class="line">  &#123;</div><div class="line">    wait += (<span class="keyword">uint32_t</span>)(uwTickFreq);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">while</span> ((HAL_GetTick() - tickstart) &lt; wait)</div><div class="line">  &#123;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">__<span class="function">weak uint32_t <span class="title">HAL_GetTick</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">  <span class="keyword">return</span> uwTick;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;delay函数的实现比较清晰，首先利用tickstart存储uwTick当前值，wait值为所需延时ms数，程序将轮询检测uwTick当前值与tickstart差值是否小于wait，直到达到所需延迟数则跳出循环。</p>
+<h3 id="delay函数的缺陷"><a href="#delay函数的缺陷" class="headerlink" title="delay函数的缺陷"></a>delay函数的缺陷</h3><p>&emsp;HAL库给出的delay函数实现了ms级别的延时，但是有2点严重不足。</p>
+<ul>
+<li>延时准确性难以保证：uwTick在SYSTICK中断中增加，但是SYSTICK本身的中断可能被更高优先级的中断打断，这将导致uwTick延迟增加。当前程序设置中SYSTICK的中断优先级设置到最高，但是实际系统中中断优先级需要根据任务的重要性来设置，通常SYSTICK不会是最高优先级的中断；</li>
+<li>延时分辨率不够：delay函数只能实现ms级别的延时，更短时间的延时无法实现。</li>
+</ul>
+<p>&emsp;基于以上考虑，需要对delay函数进行优化。</p>
+<h2 id="Delay函数的优化"><a href="#Delay函数的优化" class="headerlink" title="Delay函数的优化"></a>Delay函数的优化</h2><h3 id="SYSTICK初始化-1"><a href="#SYSTICK初始化-1" class="headerlink" title="SYSTICK初始化"></a>SYSTICK初始化</h3><p>&emsp;初始化函数如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> SYSTICK_Frequency 1000	<span class="comment">//in Hz</span></span></div><div class="line"></div><div class="line"><span class="keyword">static</span> uint32 systick_load = <span class="number">0</span>;		<span class="comment">// SysTick load value, period 1000/SYSTICK_Frequency ms</span></div><div class="line"><span class="keyword">static</span> uint32 systick_per_us = <span class="number">0</span>;	<span class="comment">// SysTick delta value per us</span></div><div class="line">uint32 delay_us_max = <span class="number">0</span>;		<span class="comment">//max value in Delay_US</span></div><div class="line"></div><div class="line"><span class="comment">/**Configure the Systick interrupt time</span></div><div class="line">*/</div><div class="line">systick_load = HAL_RCC_GetHCLKFreq()/SYSTICK_Frequency;</div><div class="line">  </div><div class="line">HAL_SYSTICK_Config(systick_load);</div><div class="line">  </div><div class="line">systick_per_us = systick_load * SYSTICK_Frequency / <span class="number">1000</span> / <span class="number">1000</span>;</div><div class="line"><span class="comment">//systick_per_us = HAL_RCC_GetHCLKFreq() / 1000 / 1000;</span></div><div class="line">  </div><div class="line">delay_us_max = UINT32_MAX / systick_per_us;</div><div class="line">  </div><div class="line"><span class="comment">/**Configure the Systick</span></div><div class="line">*/</div><div class="line">HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);</div><div class="line"></div><div class="line"><span class="comment">/* SysTick_IRQn interrupt configuration */</span></div><div class="line">HAL_NVIC_SetPriority(SysTick_IRQn, <span class="number">0</span>, <span class="number">0</span>);</div></pre></td></tr></table></figure>
+<p>&emsp;针对各个变量的说明见下图。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">变量</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">SYSTICK_Frequency</td>
+<td style="text-align:center">SYSTICK中断频率，单位为Hz。</td>
+</tr>
+<tr>
+<td style="text-align:center">systick_load</td>
+<td style="text-align:center">SYSTICK reload值，reload等于SYSTICK时钟频率/SYSTICK_Frequency，使得中断频率为SYSTICK_Frequency。</td>
+</tr>
+<tr>
+<td style="text-align:center">1000/SYSTICK_Frequency</td>
+<td style="text-align:center">SYSTICK中断周期，单位为ms。</td>
+</tr>
+<tr>
+<td style="text-align:center">systick_load * SYSTICK_Frequency / 1000</td>
+<td style="text-align:center">1ms SYSTICK计数器的变化值。</td>
+</tr>
+<tr>
+<td style="text-align:center">systick_per_us</td>
+<td style="text-align:center">1us SYSTICK计数器的变化值。</td>
+</tr>
+<tr>
+<td style="text-align:center">delay_us_max</td>
+<td style="text-align:center">SYS_Delay_US()函数允许的最大延时us数，由UINT32_MAX与systick_per_us决定。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>最后得到的delay_us_max值为：19884107，即延时最大周期不超过19884107us，约19.8s。</p>
+</blockquote>
+<h3 id="delay函数-1"><a href="#delay函数-1" class="headerlink" title="delay函数"></a>delay函数</h3><p>&emsp;函数如下所示。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">SYS_Delay_US</span><span class="params">(<span class="keyword">uint32_t</span> delay_us)</span></span></div><div class="line">&#123;</div><div class="line">	uint32 systick_pre = SysTick-&gt;VAL;</div><div class="line">	uint32 systick_now = <span class="number">0</span>;</div><div class="line"></div><div class="line">	uint32 delay_total = <span class="number">0</span>;</div><div class="line">	uint32 delay_sum = <span class="number">0</span>;</div><div class="line">	</div><div class="line">	<span class="keyword">if</span> (delay_us &gt; delay_us_max)</div><div class="line">	&#123;</div><div class="line">		<span class="keyword">while</span> (<span class="number">1</span>);</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	delay_total = systick_per_us * delay_us;</div><div class="line">	</div><div class="line">	<span class="keyword">while</span> (delay_total &gt; delay_sum)</div><div class="line">	&#123;</div><div class="line">		systick_now = SysTick-&gt;VAL;</div><div class="line">		<span class="keyword">if</span> (systick_now &lt; systick_pre)</div><div class="line">		&#123;</div><div class="line">			delay_sum += systick_pre - systick_now;</div><div class="line">			systick_pre = systick_now;		</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (systick_now &gt; systick_pre)</div><div class="line">		&#123;</div><div class="line">			delay_sum += systick_load - (systick_now - systick_pre);</div><div class="line">			systick_pre = systick_now;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;程序的逻辑比较简明，核心思想为不断获取SysTick计数值的改变量，对改变量进行累加以推算延时时间；当延时时间达到预期则跳出循环。简单介绍如下。</p>
+<ul>
+<li>进入程序后立即保存当前SysTick计数值，便于后续比较；</li>
+<li>检测delay_us值是否超限，超限则停止运行告警；</li>
+<li>delay_total为延时需要的SysTick计数值改变量；</li>
+<li>使用systick_now获取当前SysTick计数值，与systick_pre进行对比。SysTick-&gt;VAL为递减计数器，如果未发生reload，则改变值为systick_pre - systick_now；如果发生了reload，则改变值为systick_load - (systick_now - systick_pre)；</li>
+<li>delay_sum为SysTick总的改变量，当大于delay_total则跳出循环。</li>
+</ul>
+<p>&emsp;注意，该函数成立的前提有一个基本假设，即2次使用systick_now获取当前SysTick计数值之间最多发生一次reload，如果发生2次及以上以上程序无法分辨，则只会计数一次，则延时值不准确。事实上SysTick的中断一般为ms级别，同时STM32F7的运算速度很高，systick_now获取当前SysTick计数值的实时性很高，不会出现假设中描述的异常。</p>
+<h3 id="实验验证"><a href="#实验验证" class="headerlink" title="实验验证"></a>实验验证</h3><p>&emsp;main函数中对SYS_Delay_US()函数进行测试，程序如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> (<span class="number">1</span>)</div><div class="line">  &#123;</div><div class="line">		mainloop++;</div><div class="line">		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);</div><div class="line">		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);</div><div class="line">		SYS_Delay_US(<span class="number">100</span>);</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>&emsp;使用逻辑分析仪检测PB1电平变化，与预期一致。</p>
+<p><img src="http://omcg8fk23.bkt.clouddn.com/Reward.jpg" alt=""></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2018/03/29/stm32f767-delay/">STM32F767 delay函数的HAL库实现与优化</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">焦迪</a></p>
+        <p><span>发布时间:</span>2018-03-29, 19:48:22</p>
+        <p><span>最后更新:</span>2018-04-05, 18:07:31</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2018/03/29/stm32f767-delay/" title="STM32F767 delay函数的HAL库实现与优化">http://jiaodi.tech/2018/03/29/stm32f767-delay/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://jiaodi.tech/2018/03/29/stm32f767-delay/　　作者: 焦迪" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2018/04/05/stm32f767-GPIO-UART/">
+                    STM32F767 GPIO与UART的基本用法
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2018/03/23/stm32f767-system/">
+                    STM32F767系统内核与时钟设置
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开发环境"><span class="toc-number">1.</span> <span class="toc-text">开发环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件环境"><span class="toc-number">1.1.</span> <span class="toc-text">硬件环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#软件环境"><span class="toc-number">1.2.</span> <span class="toc-text">软件环境</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HAL库实现方式"><span class="toc-number">2.</span> <span class="toc-text">HAL库实现方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SYSTICK初始化"><span class="toc-number">2.1.</span> <span class="toc-text">SYSTICK初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SYSTICK中断函数"><span class="toc-number">2.2.</span> <span class="toc-text">SYSTICK中断函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#delay函数"><span class="toc-number">2.3.</span> <span class="toc-text">delay函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#delay函数的缺陷"><span class="toc-number">2.4.</span> <span class="toc-text">delay函数的缺陷</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Delay函数的优化"><span class="toc-number">3.</span> <span class="toc-text">Delay函数的优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SYSTICK初始化-1"><span class="toc-number">3.1.</span> <span class="toc-text">SYSTICK初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#delay函数-1"><span class="toc-number">3.2.</span> <span class="toc-text">delay函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验验证"><span class="toc-number">3.3.</span> <span class="toc-text">实验验证</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2018/03/29/stm32f767-delay/" data-title="STM32F767 delay函数的HAL库实现与优化" data-url="http://jiaodi.tech/2018/03/29/stm32f767-delay/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"null"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2018/04/05/stm32f767-GPIO-UART/" title="上一篇: STM32F767 GPIO与UART的基本用法">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2018/03/23/stm32f767-system/" title="下一篇: STM32F767系统内核与时钟设置">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/08/11/stm32f767-fmc-ad7616/">利用SMT32F767驱动AD7616</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/27/stm32f767-mpu/">STM32F767 MPU的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/07/16/stm32f767-sdram/">STM32F767 FMC-SDRAM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/30/stm32f767-qspi/">STM32F767 QUADSPI的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/27/stm32f767-flash/">STM32F767 Flash的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/21/stm32f767-rtc/">STM32F767 RTC的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/19/stm32f767-uart-dma/">STM32F767 DMA的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/07/stm32f767-pwm/">STM32F767 PWM的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/28/feedforward-cap/">优化前馈电容改善DCDC的瞬态响应(未完成)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/25/stm32f767-wwdg/">STM32F767 WWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/21/stm32f767-iwdg/">STM32F767 IWDG的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/16/stm32f767-timer/">STM32F767 Timer中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/08/stm32f767-gpio-it/">STM32F767 GPIO中断的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/stm32f767-GPIO-UART/">STM32F767 GPIO与UART的基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/29/stm32f767-delay/">STM32F767 delay函数的HAL库实现与优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/23/stm32f767-system/">STM32F767系统内核与时钟设置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/18/stm32f767newpro/">新建一个STM32F767工程(基于HAL库)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/17/stm32f767-start/">使用STM32CubeMX新建STM32F7工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/12/mlcc-noise/">电源应用中MLCC啸叫问题的分析与解决</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/04/pierce-oscillator/">Pierce振荡器的原理与设计方法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/28/F28379D-new-pro-cpu1/">F28379D新建工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/23/python-pyinstaller/">PyInstaller基本用法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/HDC1010-C2000/">使用F28069驱动温湿度传感器HDC1010</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/IEEEStd802-11/">IEEE Std 802.11a/g/n/ac</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/08/XDS100-VCP/">加载C2000 XDS100仿真器的虚拟串口(VCP)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/06/MarkdownSyntax/">Markdown基本语法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/21/BuckPowerStage/">Buck电路的功率部分设计</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/16/myserial/">使用C#构建一个串口程序</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/09/allegro-guide-2/">Allegro学习笔记-差分线与等长线</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/11/allegro-guide-1/">Allegro学习笔记-基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/04/cadence-allegro-package/">使用Ultra Librarian创建Cadence原理图与PCB封装</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/新建一个C2000工程/">新建一个C2000工程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/06/安装CCS与controlSUITE/">安装CCS与controlSUITE</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2018 焦迪
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
